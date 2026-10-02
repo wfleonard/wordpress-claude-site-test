@@ -1,0 +1,18 @@
+/*
+Theme Name: Saxon
+Theme URI: https://saxonwordpress.com
+Author: William Leonard, CTI Global
+Author URI: mailto:bill.leonard@cticorp.com
+Description: A lightweight, accessible custom theme for Saxon Enterprises. Built from scratch with semantic markup, separate CSS and vanilla JavaScript (no jQuery, no page builder), responsive layout and WCAG 2.2 AA focused styles.
+Version: 1.0.0
+Requires at least: 6.4
+Tested up to: 6.8
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: saxon
+Tags: accessibility-ready, custom-menu, custom-logo, editor-style, featured-images, responsive-layout, one-column, translation-ready
+
+Theme styles live in assets/css/main.css. This file only carries the
+theme header WordPress needs to register the theme.
+*/

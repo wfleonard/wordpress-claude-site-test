@@ -1,0 +1,57 @@
+/*
+ * Block editor styles so the editing canvas matches the front end.
+ * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ */
+
+body {
+	color: #1b2430;
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	font-size: 1.0625rem;
+	line-height: 1.65;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.editor-post-title__input {
+	color: #0b2440;
+	font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+a {
+	color: #12355b;
+	text-underline-offset: 0.18em;
+}
+
+blockquote {
+	border-left: 4px solid #b4510a;
+	font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+	font-style: italic;
+}
+
+.wp-block-button__link {
+	border: 2px solid #12355b;
+	border-radius: 4px;
+	background: #12355b;
+	color: #fff;
+	font-weight: 700;
+}
+
+.is-style-outline .wp-block-button__link {
+	background: transparent;
+	color: #12355b;
+}
+
+.wp-block-group.is-style-card,
+.wp-block-column.is-style-card {
+	padding: 1.5rem;
+	border: 1px solid #d6dce4;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgb(16 32 56 / 8%), 0 1px 3px rgb(16 32 56 / 6%);
+}
