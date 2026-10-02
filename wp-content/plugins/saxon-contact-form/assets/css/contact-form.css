@@ -1,0 +1,165 @@
+/*
+ * Saxon Contact Form styles.
+ * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ *
+ * Uses the Saxon theme's design tokens when present, with fallbacks so the
+ * form still looks tidy under any other theme.
+ */
+
+.saxon-cf {
+	--saxon-cf-ink: var(--color-ink, #1b2430);
+	--saxon-cf-soft: var(--color-ink-soft, #4a5565);
+	--saxon-cf-border: #8a94a3;
+	--saxon-cf-error: #b3261e;
+	--saxon-cf-error-bg: #fdecea;
+	--saxon-cf-success: #1e6b34;
+	--saxon-cf-success-bg: #e7f4ea;
+	--saxon-cf-space: var(--space-m, 1rem);
+	--saxon-cf-radius: var(--radius-m, 8px);
+
+	max-width: 46rem;
+	color: var(--saxon-cf-ink);
+}
+
+.saxon-cf__form {
+	display: grid;
+	gap: var(--saxon-cf-space);
+}
+
+.saxon-cf__required-note {
+	margin: 0;
+	color: var(--saxon-cf-soft);
+	font-size: var(--step--1, 0.9rem);
+}
+
+.saxon-cf__field {
+	display: grid;
+	gap: var(--space-2xs, 0.25rem);
+}
+
+.saxon-cf__field label {
+	margin: 0;
+	font-weight: 600;
+}
+
+.saxon-cf__field input[type="text"],
+.saxon-cf__field input[type="email"],
+.saxon-cf__field input[type="tel"],
+.saxon-cf__field textarea {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 44px;
+	padding: var(--space-xs, 0.5rem) var(--space-s, 0.75rem);
+	border: 1px solid var(--saxon-cf-border);
+	border-radius: var(--radius-s, 4px);
+	background: var(--color-surface, #fff);
+	color: inherit;
+	font: inherit;
+}
+
+.saxon-cf__field textarea {
+	min-height: 10rem;
+	resize: vertical;
+}
+
+.saxon-cf__field [aria-invalid="true"] {
+	border-color: var(--saxon-cf-error);
+	box-shadow: inset 0 0 0 1px var(--saxon-cf-error);
+}
+
+.saxon-cf__required {
+	color: var(--saxon-cf-error);
+}
+
+.saxon-cf__optional {
+	color: var(--saxon-cf-soft);
+	font-weight: 400;
+}
+
+.saxon-cf__error {
+	margin: 0;
+	color: var(--saxon-cf-error);
+	font-size: var(--step--1, 0.9rem);
+	font-weight: 600;
+}
+
+.saxon-cf__error[hidden] {
+	display: none;
+}
+
+.saxon-cf__field--consent {
+	grid-template-columns: auto 1fr;
+	align-items: start;
+	column-gap: var(--space-s, 0.75rem);
+}
+
+.saxon-cf__field--consent input {
+	width: 1.25rem;
+	height: 1.25rem;
+	margin: 0.15rem 0 0;
+	accent-color: var(--color-primary, #12355b);
+}
+
+.saxon-cf__field--consent label {
+	font-weight: 400;
+}
+
+.saxon-cf__field--consent .saxon-cf__error {
+	grid-column: 2;
+}
+
+/* Spam trap: off screen for people, still in the markup for bots. */
+.saxon-cf__trap {
+	position: absolute !important;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.saxon-cf__actions {
+	margin-top: var(--space-xs, 0.5rem);
+}
+
+.saxon-cf__submit[aria-busy="true"] {
+	opacity: 0.7;
+	cursor: progress;
+}
+
+.saxon-cf__status {
+	margin-bottom: var(--saxon-cf-space);
+	padding: var(--space-s, 0.75rem) var(--saxon-cf-space);
+	border-left: 4px solid currentColor;
+	border-radius: var(--saxon-cf-radius);
+	font-weight: 600;
+}
+
+.saxon-cf__status[hidden] {
+	display: none;
+}
+
+.saxon-cf__status:focus {
+	outline: 3px solid var(--color-focus, #f2b632);
+	outline-offset: 2px;
+}
+
+.saxon-cf__status--success {
+	background: var(--saxon-cf-success-bg);
+	color: var(--saxon-cf-success);
+}
+
+.saxon-cf__status--error {
+	background: var(--saxon-cf-error-bg);
+	color: var(--saxon-cf-error);
+}
+
+.saxon-cf__status--info {
+	background: var(--color-primary-light, #e8eef6);
+	color: var(--color-primary, #12355b);
+}
+
+.saxon-cf__editor-note {
+	margin-top: 0.5rem;
+	color: var(--saxon-cf-soft);
+	font-size: 0.85rem;
+}

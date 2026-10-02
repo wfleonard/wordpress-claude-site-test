@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "saxon/contact-form",
+	"title": "Contact form",
+	"category": "widgets",
+	"icon": "email",
+	"description": "The site contact form. Messages are emailed to the address set under Settings, Contact form.",
+	"keywords": [ "contact", "form", "email" ],
+	"textdomain": "saxon-contact-form",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"reusable": false
+	},
+	"editorScript": "saxon-cf-block-editor",
+	"style": "saxon-cf",
+	"viewScript": "saxon-cf",
+	"render": "file:./render.php"
+}

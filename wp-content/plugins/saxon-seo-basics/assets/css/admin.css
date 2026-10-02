@@ -1,0 +1,45 @@
+/*
+ * Saxon SEO Basics admin styles.
+ * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ */
+
+.saxon-seo-box label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.saxon-seo-box .saxon-seo-box__check {
+	font-weight: 400;
+}
+
+.saxon-seo-box .description {
+	display: block;
+	margin-top: 4px;
+}
+
+.saxon-seo-count {
+	display: block;
+	margin-top: 4px;
+	color: #50575e;
+	font-size: 12px;
+}
+
+.saxon-seo-count--over {
+	color: #b32d2e;
+	font-weight: 600;
+}
+
+.saxon-seo-image__preview {
+	display: block;
+	max-width: 300px;
+	height: auto;
+	margin-bottom: 8px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+}
+
+.saxon-seo-image__preview[hidden],
+.saxon-seo-image [hidden] {
+	display: none;
+}
