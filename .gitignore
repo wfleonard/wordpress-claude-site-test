@@ -1,0 +1,4 @@
+# Local development only
+node_modules/
+*.log
+.DS_Store
