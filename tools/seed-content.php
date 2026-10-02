@@ -178,9 +178,7 @@ $saxon_contact = <<<'HTML'
 <p>We would love to hear about your project. Reach out using the details on this page and we will reply within one business day.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:paragraph -->
-<p><em>A contact form will be added here by the site's contact form plugin.</em></p>
-<!-- /wp:paragraph -->
+<!-- wp:saxon/contact-form /-->
 HTML;
 
 $saxon_home_id     = saxon_seed_page( 'home', 'Home', $saxon_home );
