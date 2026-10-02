@@ -10,6 +10,7 @@ Author: William Leonard, CTI Global, bill.leonard@cticorp.com
 wp-content/themes/saxon/                Custom "Saxon" theme (copy this folder to the server)
 wp-content/plugins/saxon-contact-form/  Contact form plugin
 wp-content/plugins/saxon-seo-basics/    SEO basics plugin (meta, social tags, schema)
+wp-content/mu-plugins/saxon-smtp.php    Sends all WordPress email through Google Workspace
 tools/seed-content.php                  Creates the starter pages, menus and reading settings
 tools/router.php                        Router for PHP's built in server (local testing only)
 tools/dev-mail-log.php                  Must use plugin that logs wp_mail() to a file (local testing only)
@@ -41,6 +42,17 @@ Both plugins are written from scratch: plain PHP, separate CSS and JavaScript fi
 
 **Saxon SEO Basics** covers only what core does not: meta descriptions, Open Graph and Twitter tags, JSON-LD (Organization, WebSite, WebPage, BreadcrumbList, BlogPosting), a per page SEO title, description and noindex box, and lastmod dates in the core sitemap. Core keeps the title tag, canonical links, robots meta and `/wp-sitemap.xml`. It switches itself off if Yoast, Rank Math, All in One SEO, SEOPress or The SEO Framework is active. Set the home page description and default share image under Settings, SEO basics.
 
+## Email (Saxon SMTP)
+
+`wp-content/mu-plugins/saxon-smtp.php` is a must use plugin (no settings screen, nothing to activate) that routes every `wp_mail()` through Google Workspace. It does nothing until `SAXON_SMTP_FROM` is defined in `wp-config.php`:
+
+```
+define( 'SAXON_SMTP_FROM', 'you@yourdomain.com' );
+define( 'SAXON_SMTP_FROM_NAME', 'Saxon Enterprises' ); // optional
+```
+
+By default it uses Google's SMTP relay (`smtp-relay.gmail.com:587`, TLS, no password). In admin.google.com, under Apps, Google Workspace, Gmail, Routing, SMTP relay service, allow only addresses in your domains, accept mail only from the server's IP address and require TLS. The plugin connects over IPv4 so it matches an IPv4 allowlist. Defining `SAXON_SMTP_PASS` (a Google App Password) switches it to `smtp.gmail.com` with login instead. Failures are written to the PHP error log.
+
 ## Local development
 
 ```
@@ -59,4 +71,4 @@ Activate both plugins under Plugins. With `dev-mail-log.php` installed, contact 
 
 ## Deploying
 
-Upload `wp-content/themes/saxon` to the server's `wp-content/themes/` and both folders under `wp-content/plugins/` to the server's `wp-content/plugins/` (never `tools/dev-mail-log.php`), activate the theme under Appearance, Themes and the plugins under Plugins, then assign page templates and menus (or run `wp eval-file tools/seed-content.php` after a database backup).
+Upload `wp-content/themes/saxon` to the server's `wp-content/themes/` and both folders under `wp-content/plugins/` to the server's `wp-content/plugins/` (never `tools/dev-mail-log.php`), upload `wp-content/mu-plugins/saxon-smtp.php` to the server's `wp-content/mu-plugins/` and add its `wp-config.php` lines, activate the theme under Appearance, Themes and the plugins under Plugins, then assign page templates and menus (or run `wp eval-file tools/seed-content.php` after a database backup).
