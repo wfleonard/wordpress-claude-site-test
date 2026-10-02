@@ -10,6 +10,7 @@ Author: William Leonard, CTI Global, bill.leonard@cticorp.com
 wp-content/themes/saxon/                Custom "Saxon" theme (copy this folder to the server)
 wp-content/plugins/saxon-contact-form/  Contact form plugin
 wp-content/plugins/saxon-seo-basics/    SEO basics plugin (meta, social tags, schema)
+wp-content/plugins/saxon-social-login/ Sign in with Google or Microsoft on the login screen
 wp-content/mu-plugins/saxon-smtp.php    Sends all WordPress email through Google Workspace
 tools/seed-content.php                  Creates the starter pages, menus and reading settings
 tools/router.php                        Router for PHP's built in server (local testing only)
@@ -41,6 +42,8 @@ Both plugins are written from scratch: plain PHP, separate CSS and JavaScript fi
 * Works without JavaScript; with it, inline validation and submit without reload.
 
 **Saxon SEO Basics** covers only what core does not: meta descriptions, Open Graph and Twitter tags, JSON-LD (Organization, WebSite, WebPage, BreadcrumbList, BlogPosting), a per page SEO title, description and noindex box, and lastmod dates in the core sitemap. Core keeps the title tag, canonical links, robots meta and `/wp-sitemap.xml`. It switches itself off if Yoast, Rank Math, All in One SEO, SEOPress or The SEO Framework is active. Set the home page description and default share image under Settings, SEO basics.
+
+**Saxon Social Login** adds "Sign in with Google" and "Sign in with Microsoft" under the normal login form. Only existing users can sign in. A verified Google address that matches a user's email works straight away; a Microsoft account is connected once from the user's profile. Client ids and secrets go in `wp-config.php` and the redirect URI is `/wp-json/saxon-sso/v1/callback`; `readme.txt` has the Google and Microsoft setup steps.
 
 ## Email (Saxon SMTP)
 
