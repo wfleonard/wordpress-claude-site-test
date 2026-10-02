@@ -60,7 +60,14 @@ function saxon_seo_print_head() {
 		if ( '' === (string) $tag[2] ) {
 			continue;
 		}
-		printf( '<meta %1$s="%2$s" content="%3$s" />' . "\n", esc_attr( $tag[0] ), esc_attr( $tag[1] ), esc_attr( $tag[2] ) );
+		$is_url = in_array( $tag[1], array( 'og:url', 'og:image' ), true );
+		printf( '<meta %1$s="%2$s" content="%3$s" />' . "\n", esc_attr( $tag[0] ), esc_attr( $tag[1] ), $is_url ? esc_url( $tag[2] ) : esc_attr( $tag[2] ) );
+	}
+
+	// Core prints rel="canonical" only on single posts and pages; cover the
+	// posts page and archives so their URL variants point to one address.
+	if ( ! is_singular() && '' !== $context['url'] ) {
+		printf( '<link rel="canonical" href="%s" />' . "\n", esc_url( $context['url'] ) );
 	}
 }
 

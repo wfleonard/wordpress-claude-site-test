@@ -64,6 +64,12 @@ function saxon_content_width() {
 add_action( 'after_setup_theme', 'saxon_content_width', 0 );
 
 /**
+ * Load block styles only for blocks on the page instead of the whole
+ * block library, which classic themes otherwise get on every request.
+ */
+add_filter( 'should_load_separate_core_block_assets', '__return_true' );
+
+/**
  * Enqueue front end styles and scripts.
  */
 function saxon_enqueue_assets() {
@@ -119,7 +125,7 @@ add_action( 'widgets_init', 'saxon_widgets_init' );
  * Add a "no-js" to "js" swap so CSS can style the menu before scripts run.
  */
 function saxon_js_detection() {
-	echo "<script>document.documentElement.classList.replace('no-js','js');</script>\n";
+	wp_print_inline_script_tag( "document.documentElement.classList.replace('no-js','js');" );
 }
 add_action( 'wp_head', 'saxon_js_detection', 0 );
 

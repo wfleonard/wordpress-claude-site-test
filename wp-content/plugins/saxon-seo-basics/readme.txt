@@ -20,6 +20,7 @@ The SEO pieces WordPress core leaves out, and nothing more. Author: William Leon
 * Open Graph and Twitter card tags (title, description, URL, image with size and alt, article dates). Image order: featured image, default share image, custom logo, site icon.
 * JSON-LD `@graph`: Organization (logo, phone and email with the Saxon theme's Customizer details as fallback, social profiles), WebSite with search, WebPage (ContactPage and AboutPage on those templates), BreadcrumbList, and BlogPosting for posts.
 * Per page "Search and sharing" box: SEO title, meta description, and a noindex switch that also removes the page from the core sitemap.
+* `rel="canonical"` on the posts page and archives, which core leaves without one.
 * Sitemap tweaks: last modified dates on entries, and the author sitemap removed (filter `saxon_seo_keep_user_sitemap` to keep it).
 
 If Yoast SEO, Rank Math, All in One SEO, SEOPress or The SEO Framework is active, this plugin prints nothing on the front end so tags are never duplicated.

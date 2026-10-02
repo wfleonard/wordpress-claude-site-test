@@ -71,11 +71,16 @@ function saxon_cf_init() {
 add_action( 'init', 'saxon_cf_init' );
 
 /**
- * Load the assets in the head when the current page uses the shortcode, so
- * the form is styled on first paint. The block loads its own assets.
+ * Load the assets in the head when the current page uses the shortcode or
+ * the block, so the form is styled on first paint. Without this, themes that
+ * load block styles on demand would print the stylesheet in the body.
  */
 function saxon_cf_maybe_enqueue() {
-	if ( is_singular() && has_shortcode( (string) get_post_field( 'post_content', get_queried_object_id() ), 'saxon_contact_form' ) ) {
+	if ( ! is_singular() ) {
+		return;
+	}
+	$content = (string) get_post_field( 'post_content', get_queried_object_id() );
+	if ( has_shortcode( $content, 'saxon_contact_form' ) || has_block( 'saxon/contact-form', $content ) ) {
 		wp_enqueue_style( 'saxon-cf' );
 		wp_enqueue_script( 'saxon-cf' );
 	}

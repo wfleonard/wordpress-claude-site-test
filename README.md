@@ -34,7 +34,7 @@ Both plugins are written from scratch: plain PHP, separate CSS and JavaScript fi
 **Saxon Contact Form** (`[saxon_contact_form]` shortcode or the **Contact form** block, already placed on the seeded Contact page)
 
 * Nonce check, every field sanitized and length checked, all output escaped, Reply-To built only from validated values.
-* Spam: honeypot field, signed timestamp that rejects forms sent within 3 seconds, at most 3 links, and 5 valid messages per visitor per 10 minutes (IP hashed, never stored). Spam gets a fake success and is dropped.
+* Spam: honeypot field, signed timestamp that rejects forms sent within 3 seconds, at most 3 links, and 5 valid messages (or 20 invalid ones) per visitor per 10 minutes (IP hashed, never stored). Spam gets a fake success and is dropped.
 * Email through `wp_mail()` to the addresses under Settings, Contact form (admin email by default). Use an SMTP plugin or the host's mail service so delivery is reliable.
 * Optional copy of each message under **Messages** (admins only), wired into the WordPress personal data export and erase tools.
 * Works without JavaScript; with it, inline validation and submit without reload.

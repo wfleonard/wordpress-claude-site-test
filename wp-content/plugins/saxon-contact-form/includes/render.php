@@ -42,17 +42,21 @@ function saxon_cf_request_state() {
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended
 	$status = isset( $_GET['saxon_cf'] ) ? sanitize_key( wp_unslash( $_GET['saxon_cf'] ) ) : '';
 	$key    = isset( $_GET['saxon_cf_key'] ) ? sanitize_key( wp_unslash( $_GET['saxon_cf_key'] ) ) : '';
+	$code   = isset( $_GET['saxon_cf_code'] ) ? sanitize_key( wp_unslash( $_GET['saxon_cf_code'] ) ) : '';
 	// phpcs:enable
 
 	if ( 'sent' === $status ) {
 		$state['status'] = 'sent';
+	} elseif ( 'error' === $status && $code ) {
+		$state['status'] = 'error';
+		$state['errors'] = array( '_form' => saxon_cf_form_error( $code ) );
 	} elseif ( 'error' === $status && $key ) {
 		$saved = get_transient( 'saxon_cf_state_' . $key );
 		if ( is_array( $saved ) ) {
 			$state = array_merge( $state, $saved, array( 'status' => 'error' ) );
 		} else {
 			$state['status'] = 'error';
-			$state['errors'] = array( '_form' => __( 'Your message was not sent. Please try again.', 'saxon-contact-form' ) );
+			$state['errors'] = array( '_form' => saxon_cf_form_error( '' ) );
 		}
 	}
 
