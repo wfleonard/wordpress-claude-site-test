@@ -25,6 +25,13 @@ const SAXON_CF_RATE_LIMIT  = 5;
 const SAXON_CF_RATE_WINDOW = 600;
 
 /**
+ * Failed (invalid) submissions allowed per visitor within the same window.
+ * High enough that people fixing typos never hit it; it stops scripts from
+ * filling the options table with saved form states.
+ */
+const SAXON_CF_FAIL_LIMIT = 20;
+
+/**
  * Process a submission.
  */
 function saxon_cf_handle_submission() {
@@ -37,12 +44,7 @@ function saxon_cf_handle_submission() {
 	$is_ajax = ! empty( $_POST['saxon_cf_ajax'] );
 
 	if ( ! isset( $_POST['saxon_cf_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['saxon_cf_nonce'] ) ), 'saxon_contact' ) ) {
-		saxon_cf_respond(
-			$is_ajax,
-			false,
-			array( '_form' => __( 'This form has expired. Please reload the page and try again.', 'saxon-contact-form' ) ),
-			array()
-		);
+		saxon_cf_respond( $is_ajax, false, array(), array(), 'expired' );
 	}
 
 	$raw = wp_unslash( $_POST );
@@ -53,16 +55,12 @@ function saxon_cf_handle_submission() {
 	}
 
 	if ( saxon_cf_rate_limited() ) {
-		saxon_cf_respond(
-			$is_ajax,
-			false,
-			array( '_form' => __( 'You have sent several messages in a short time. Please wait a few minutes and try again.', 'saxon-contact-form' ) ),
-			array()
-		);
+		saxon_cf_respond( $is_ajax, false, array(), array(), 'limited' );
 	}
 
 	$result = saxon_cf_validate( $raw );
 	if ( $result['errors'] ) {
+		saxon_cf_count_failure();
 		saxon_cf_respond( $is_ajax, false, $result['errors'], $result['values'] );
 	}
 
@@ -86,12 +84,7 @@ function saxon_cf_handle_submission() {
 	do_action( 'saxon_cf_submitted', $values, $sent, $page_id );
 
 	if ( ! $sent && ! saxon_cf_option( 'store' ) ) {
-		saxon_cf_respond(
-			$is_ajax,
-			false,
-			array( '_form' => __( 'Sorry, your message could not be sent. Please try again, or contact us by phone or email.', 'saxon-contact-form' ) ),
-			$values
-		);
+		saxon_cf_respond( $is_ajax, false, array( '_form' => saxon_cf_form_error( 'failed' ) ), $values );
 	}
 
 	saxon_cf_respond( $is_ajax, true, array(), array() );
@@ -128,18 +121,45 @@ function saxon_cf_is_spam( $raw ) {
  *
  * @return string
  */
-function saxon_cf_rate_key() {
+function saxon_cf_rate_key( $kind = 'rate' ) {
 	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-	return 'saxon_cf_rate_' . substr( wp_hash( $ip . '|saxon_cf_rate' ), 0, 32 );
+	return 'saxon_cf_' . $kind . '_' . substr( wp_hash( $ip . '|saxon_cf_rate' ), 0, 32 );
 }
 
 /**
- * Whether the visitor has used up their submissions for now.
+ * Whether the visitor has used up their submissions, or failed attempts, for now.
  *
  * @return bool
  */
 function saxon_cf_rate_limited() {
-	return (int) get_transient( saxon_cf_rate_key() ) >= SAXON_CF_RATE_LIMIT;
+	return (int) get_transient( saxon_cf_rate_key() ) >= SAXON_CF_RATE_LIMIT
+		|| (int) get_transient( saxon_cf_rate_key( 'fail' ) ) >= SAXON_CF_FAIL_LIMIT;
+}
+
+/**
+ * Count a submission that failed validation.
+ */
+function saxon_cf_count_failure() {
+	$key = saxon_cf_rate_key( 'fail' );
+	set_transient( $key, (int) get_transient( $key ) + 1, SAXON_CF_RATE_WINDOW );
+}
+
+/**
+ * Message for a form level error code.
+ *
+ * @param string $code expired, limited or failed.
+ * @return string
+ */
+function saxon_cf_form_error( $code ) {
+	switch ( $code ) {
+		case 'expired':
+			return __( 'This form has expired. Please reload the page and try again.', 'saxon-contact-form' );
+		case 'limited':
+			return __( 'You have sent several messages in a short time. Please wait a few minutes and try again.', 'saxon-contact-form' );
+		case 'failed':
+			return __( 'Sorry, your message could not be sent. Please try again, or contact us by phone or email.', 'saxon-contact-form' );
+	}
+	return __( 'Your message was not sent. Please try again.', 'saxon-contact-form' );
 }
 
 /**
@@ -182,8 +202,9 @@ function saxon_cf_send_mail( $values, $page_id ) {
 	$lines[] = sprintf( __( 'Sent from the contact form on %s. Reply to this email to answer the sender.', 'saxon-contact-form' ), $site );
 
 	// Name and email are already free of line breaks (sanitize_text_field and
-	// sanitize_email), so they cannot inject extra headers.
-	$reply_name = str_replace( array( '"', '\\' ), '', $values['name'] );
+	// sanitize_email). wp_mail() also splits address headers on commas, so
+	// strip address syntax from the display name to keep it a single address.
+	$reply_name = trim( preg_replace( '/[",;<>\\\\[:cntrl:]]+/', ' ', $values['name'] ) );
 	$headers    = array(
 		'Content-Type: text/plain; charset=UTF-8',
 		sprintf( 'Reply-To: "%s" <%s>', $reply_name, $values['email'] ),
@@ -215,9 +236,15 @@ function saxon_cf_send_mail( $values, $page_id ) {
  * @param bool  $is_ajax Scripted request.
  * @param bool  $success Outcome.
  * @param array $errors  Field errors keyed by name, "_form" for general.
- * @param array $values  Values to refill the form with.
+ * @param array  $values  Values to refill the form with.
+ * @param string $code    Form level error code (see saxon_cf_form_error()).
+ *                        Sent in the URL, so nothing is stored for it.
  */
-function saxon_cf_respond( $is_ajax, $success, $errors, $values ) {
+function saxon_cf_respond( $is_ajax, $success, $errors, $values, $code = '' ) {
+	if ( '' !== $code ) {
+		$errors = array( '_form' => saxon_cf_form_error( $code ) );
+	}
+
 	if ( $is_ajax ) {
 		if ( $success ) {
 			wp_send_json_success( array( 'message' => saxon_cf_option( 'success' ) ) );
@@ -228,11 +255,19 @@ function saxon_cf_respond( $is_ajax, $success, $errors, $values ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- an element id, validated below.
 	$anchor   = isset( $_POST['saxon_cf_return'] ) ? sanitize_html_class( wp_unslash( $_POST['saxon_cf_return'] ) ) : '';
 	$referer  = wp_get_referer();
-	$redirect = $referer ? remove_query_arg( array( 'saxon_cf', 'saxon_cf_key' ), $referer ) : home_url( '/' );
+	$redirect = $referer ? remove_query_arg( array( 'saxon_cf', 'saxon_cf_key', 'saxon_cf_code' ), $referer ) : home_url( '/' );
 	$redirect = preg_replace( '/#.*$/', '', $redirect );
 
 	if ( $success ) {
 		$redirect = add_query_arg( 'saxon_cf', 'sent', $redirect );
+	} elseif ( '' !== $code ) {
+		$redirect = add_query_arg(
+			array(
+				'saxon_cf'      => 'error',
+				'saxon_cf_code' => $code,
+			),
+			$redirect
+		);
 	} else {
 		$key = strtolower( wp_generate_password( 20, false ) );
 		set_transient(

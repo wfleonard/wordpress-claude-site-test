@@ -117,8 +117,9 @@ function saxon_contact_details( $class = '' ) {
 	}
 	if ( $email ) {
 		printf(
-			'<div><dt>%1$s</dt><dd><a href="mailto:%2$s">%2$s</a></dd></div>',
+			'<div><dt>%1$s</dt><dd><a href="%2$s">%3$s</a></dd></div>',
 			esc_html__( 'Email', 'saxon' ),
+			esc_url( 'mailto:' . antispambot( $email ) ),
 			esc_html( antispambot( $email ) )
 		);
 	}

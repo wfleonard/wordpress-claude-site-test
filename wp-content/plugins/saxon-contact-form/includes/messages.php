@@ -222,7 +222,7 @@ function saxon_cf_messages_for_email( $email, $page ) {
 	return get_posts(
 		array(
 			'post_type'      => SAXON_CF_POST_TYPE,
-			'post_status'    => 'any',
+			'post_status'    => array_keys( get_post_stati() ), // Includes trash, which 'any' leaves out.
 			'fields'         => 'ids',
 			'posts_per_page' => 50,
 			'paged'          => max( 1, (int) $page ),
