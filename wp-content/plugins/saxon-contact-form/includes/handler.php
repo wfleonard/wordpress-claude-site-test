@@ -47,11 +47,18 @@ function saxon_cf_handle_submission() {
 		saxon_cf_respond( $is_ajax, false, array(), array(), 'expired' );
 	}
 
-	$raw = wp_unslash( $_POST );
+	$raw   = wp_unslash( $_POST );
+	$token = isset( $raw['saxon_cf_ts'] ) && is_string( $raw['saxon_cf_ts'] ) ? $raw['saxon_cf_ts'] : '';
 
-	if ( saxon_cf_is_spam( $raw ) ) {
+	$reason = saxon_cf_is_spam( $raw );
+	if ( $reason ) {
 		// Look successful so bots learn nothing, but send and store nothing.
+		saxon_cf_record_blocked( $reason );
 		saxon_cf_respond( $is_ajax, true, array(), array() );
+	}
+
+	if ( saxon_cf_token_expired( $token ) ) {
+		saxon_cf_respond( $is_ajax, false, array(), array(), 'expired' );
 	}
 
 	if ( saxon_cf_rate_limited() ) {
@@ -59,16 +66,44 @@ function saxon_cf_handle_submission() {
 	}
 
 	$result = saxon_cf_validate( $raw );
+	if ( ! $result['errors'] ) {
+		$problem = saxon_cf_email_problem( $result['values']['email'] );
+		if ( $problem ) {
+			$result['errors']['email'] = $problem;
+		}
+	}
 	if ( $result['errors'] ) {
 		saxon_cf_count_failure();
 		saxon_cf_respond( $is_ajax, false, $result['errors'], $result['values'] );
 	}
 
-	saxon_cf_count_submission();
-
 	$values  = $result['values'];
 	$page_id = url_to_postid( (string) wp_get_referer() );
-	$sent    = saxon_cf_send_mail( $values, $page_id );
+
+	// Each loaded form can be sent once; a replayed form is a script.
+	if ( ! saxon_cf_use_token( $token ) ) {
+		saxon_cf_record_blocked( 'replay' );
+		saxon_cf_respond( $is_ajax, true, array(), array() );
+	}
+
+	if ( saxon_cf_counter_get( 'e' . saxon_cf_hash( $values['email'] ), HOUR_IN_SECONDS ) >= SAXON_CF_EMAIL_LIMIT ) {
+		saxon_cf_respond( $is_ajax, false, array(), array(), 'limited' );
+	}
+
+	// Content that reads like spam is not emailed. With "Keep a copy" on it is
+	// saved as a pending message marked as spam, so nothing genuine is lost.
+	$content_reason = saxon_cf_content_spam( $values );
+	if ( $content_reason ) {
+		saxon_cf_record_blocked( $content_reason );
+		if ( saxon_cf_option( 'store' ) ) {
+			saxon_cf_store_message( $values, $page_id, false, $content_reason );
+		}
+		saxon_cf_respond( $is_ajax, true, array(), array() );
+	}
+
+	saxon_cf_count_submission( $values['email'] );
+
+	$sent = saxon_cf_send_mail( $values, $page_id );
 
 	if ( saxon_cf_option( 'store' ) ) {
 		saxon_cf_store_message( $values, $page_id, $sent );
@@ -91,57 +126,52 @@ function saxon_cf_handle_submission() {
 }
 
 /**
- * Honeypot and timing checks.
+ * Honeypot, signed token and timing checks.
  *
  * @param array $raw Unslashed request data.
- * @return bool
+ * @return string Reason code when the request is from a bot, or ''.
  */
 function saxon_cf_is_spam( $raw ) {
 	if ( ! empty( $raw['website'] ) ) {
-		return true;
+		return 'honeypot';
 	}
 
+	// Token: "time.random.signature". The older "time.signature" form is
+	// still accepted so pages loaded before an update keep working.
 	$token = isset( $raw['saxon_cf_ts'] ) && is_string( $raw['saxon_cf_ts'] ) ? $raw['saxon_cf_ts'] : '';
-	$parts = explode( '.', $token, 2 );
-	if ( 2 !== count( $parts ) || ! ctype_digit( $parts[0] ) ) {
-		return true;
+	$parts = explode( '.', $token );
+	if ( 3 === count( $parts ) && ctype_digit( $parts[0] ) && ctype_alnum( $parts[1] ) ) {
+		$valid = hash_equals( substr( wp_hash( $parts[0] . '|' . $parts[1] . '|saxon_cf' ), 0, 24 ), $parts[2] );
+	} elseif ( 2 === count( $parts ) && ctype_digit( $parts[0] ) ) {
+		$valid = hash_equals( substr( wp_hash( $parts[0] . '|saxon_cf' ), 0, 20 ), $parts[1] );
+	} else {
+		$valid = false;
 	}
-	if ( ! hash_equals( substr( wp_hash( $parts[0] . '|saxon_cf' ), 0, 20 ), $parts[1] ) ) {
-		return true;
+	if ( ! $valid ) {
+		return 'token';
 	}
 
-	return ( time() - (int) $parts[0] ) < SAXON_CF_MIN_SECONDS;
+	return ( time() - (int) $parts[0] ) < SAXON_CF_MIN_SECONDS ? 'too_fast' : '';
 }
 
 /**
- * Transient key for the visitor's submission count.
- *
- * The visitor is identified by a salted hash of their IP address; the
- * address itself is never stored.
- *
- * @return string
- */
-function saxon_cf_rate_key( $kind = 'rate' ) {
-	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-	return 'saxon_cf_' . $kind . '_' . substr( wp_hash( $ip . '|saxon_cf_rate' ), 0, 32 );
-}
-
-/**
- * Whether the visitor has used up their submissions, or failed attempts, for now.
+ * Whether the visitor has used up their submissions or failed attempts, or
+ * the whole form has hit its hourly cap.
  *
  * @return bool
  */
 function saxon_cf_rate_limited() {
-	return (int) get_transient( saxon_cf_rate_key() ) >= SAXON_CF_RATE_LIMIT
-		|| (int) get_transient( saxon_cf_rate_key( 'fail' ) ) >= SAXON_CF_FAIL_LIMIT;
+	$ip = saxon_cf_hash( saxon_cf_ip() );
+	return saxon_cf_counter_get( 'r' . $ip, SAXON_CF_RATE_WINDOW ) >= SAXON_CF_RATE_LIMIT
+		|| saxon_cf_counter_get( 'f' . $ip, SAXON_CF_RATE_WINDOW ) >= SAXON_CF_FAIL_LIMIT
+		|| saxon_cf_counter_get( 'all', HOUR_IN_SECONDS ) >= SAXON_CF_GLOBAL_LIMIT;
 }
 
 /**
  * Count a submission that failed validation.
  */
 function saxon_cf_count_failure() {
-	$key = saxon_cf_rate_key( 'fail' );
-	set_transient( $key, (int) get_transient( $key ) + 1, SAXON_CF_RATE_WINDOW );
+	saxon_cf_counter_hit( 'f' . saxon_cf_hash( saxon_cf_ip() ), SAXON_CF_RATE_WINDOW );
 }
 
 /**
@@ -163,12 +193,16 @@ function saxon_cf_form_error( $code ) {
 }
 
 /**
- * Count a valid submission against the visitor's limit. Failed validation
- * does not count, so fixing a typo never locks anyone out.
+ * Count a valid submission against the visitor's, the address's and the
+ * form's limits. Failed validation does not count, so fixing a typo never
+ * locks anyone out.
+ *
+ * @param string $email Sender address.
  */
-function saxon_cf_count_submission() {
-	$key = saxon_cf_rate_key();
-	set_transient( $key, (int) get_transient( $key ) + 1, SAXON_CF_RATE_WINDOW );
+function saxon_cf_count_submission( $email ) {
+	saxon_cf_counter_hit( 'r' . saxon_cf_hash( saxon_cf_ip() ), SAXON_CF_RATE_WINDOW );
+	saxon_cf_counter_hit( 'e' . saxon_cf_hash( $email ), HOUR_IN_SECONDS );
+	saxon_cf_counter_hit( 'all', HOUR_IN_SECONDS );
 }
 
 /**
@@ -208,6 +242,8 @@ function saxon_cf_send_mail( $values, $page_id ) {
 	$headers    = array(
 		'Content-Type: text/plain; charset=UTF-8',
 		sprintf( 'Reply-To: "%s" <%s>', $reply_name, $values['email'] ),
+		// Lets a mail filter recognize form messages that passed every check.
+		'X-Saxon-Contact: website-form; checks=passed',
 	);
 
 	/**

@@ -23,7 +23,8 @@ function saxon_cf_shortcode() {
  */
 function saxon_cf_time_token() {
 	$time = time();
-	return $time . '.' . substr( wp_hash( $time . '|saxon_cf' ), 0, 20 );
+	$rand = wp_generate_password( 12, false );
+	return $time . '.' . $rand . '.' . substr( wp_hash( $time . '|' . $rand . '|saxon_cf' ), 0, 24 );
 }
 
 /**

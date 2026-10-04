@@ -87,21 +87,25 @@ add_action( 'current_screen', 'saxon_cf_guard_list_screen' );
  *
  * @param array $values  Sanitized values.
  * @param int   $page_id Source page.
- * @param bool  $sent    Whether the email went out.
+ * @param bool   $sent        Whether the email went out.
+ * @param string $spam_reason Reason code when the message was held as suspected spam.
  * @return int Post ID or 0.
  */
-function saxon_cf_store_message( $values, $page_id, $sent ) {
-	$id = wp_insert_post(
+function saxon_cf_store_message( $values, $page_id, $sent, $spam_reason = '' ) {
+	$labels = saxon_cf_reason_labels();
+	$id     = wp_insert_post(
 		array(
 			'post_type'    => SAXON_CF_POST_TYPE,
-			'post_status'  => 'private',
-			'post_title'   => sprintf( '%1$s (%2$s)', $values['name'], $values['email'] ),
+			// Suspected spam is kept as Pending so it is easy to review and delete.
+			'post_status'  => $spam_reason ? 'pending' : 'private',
+			'post_title'   => ( $spam_reason ? '[' . __( 'Spam?', 'saxon-contact-form' ) . ' ' . ( $labels[ $spam_reason ] ?? $spam_reason ) . '] ' : '' ) . sprintf( '%1$s (%2$s)', $values['name'], $values['email'] ),
 			'post_content' => '',
 			'meta_input'   => array(
 				'_saxon_cf_values'    => $values,
 				'_saxon_cf_email'     => $values['email'],
 				'_saxon_cf_page'      => (int) $page_id,
 				'_saxon_cf_mail_sent' => $sent ? 1 : 0,
+				'_saxon_cf_spam'      => $spam_reason,
 			),
 		),
 		true
