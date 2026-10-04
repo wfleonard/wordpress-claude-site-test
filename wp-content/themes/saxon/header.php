@@ -43,6 +43,10 @@ defined( 'ABSPATH' ) || exit;
 				?>
 			</nav>
 		<?php endif; ?>
+
+		<div class="header-account">
+			<?php saxon_header_account(); ?>
+		</div>
 	</div>
 </header>
 

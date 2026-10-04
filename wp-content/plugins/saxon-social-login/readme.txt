@@ -9,7 +9,7 @@ License: GPLv2 or later
 
 == Description ==
 
-* Only existing users can sign in. Nobody is registered automatically.
+* Only existing users can sign in, except that members of the Google Workspace domains listed in SAXON_SSO_SIGNUP_DOMAINS get a Subscriber account the first time they sign in with Google. The account must be managed by that Workspace (Google's hd claim), not a personal Google account using a company address.
 * Google: a verified Google address that matches a user's email signs that user in and connects the account on first use.
 * Microsoft: Microsoft does not guarantee the email it reports is verified, so each user connects their Microsoft account once from Users, Profile, "Connected sign in accounts" while signed in. After that the button works.
 * Users can connect or disconnect either account from their profile. Username and password sign in keeps working.
@@ -33,6 +33,7 @@ Add to wp-config.php, above "That's all, stop editing!":
     define( 'SAXON_SSO_MICROSOFT_CLIENT_ID', '00000000-0000-0000-0000-000000000000' );
     define( 'SAXON_SSO_MICROSOFT_CLIENT_SECRET', '...' );
     define( 'SAXON_SSO_MICROSOFT_TENANT', 'common' ); // optional: common, organizations, consumers or a tenant id
+    define( 'SAXON_SSO_SIGNUP_DOMAINS', 'example.com' ); // optional: Workspace domains whose members sign up as Subscribers
 
 Either provider can be left out. Microsoft client secrets expire (up to 24 months); renew them before then.
 

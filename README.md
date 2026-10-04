@@ -26,6 +26,7 @@ Markup lives in PHP templates, styles in `assets/css/main.css`, behavior in `ass
 * Accessibility: skip link, visible focus, landmark labels, `aria-expanded` menu toggle with Escape to close, 44px touch targets, AA colour contrast, reduced motion support.
 * Page templates: **About**, **Services** (lists child pages as cards) and **Contact** (content column plus contact details).
 * Static home page (`front-page.php`) with an editable hero, the Home page content and the latest posts.
+* Header: a **Log in** button for visitors, and **My account** and **Log out** for signed in users, each returning to the current page.
 * Customizer: **Home page hero** (heading, text, two buttons) and **Contact details** (phone, email, address, hours) shown in the footer and on the Contact page.
 * `theme.json` supplies the editor colour palette and font sizes; a **Card** block style is registered for Group and Column blocks.
 
@@ -43,7 +44,7 @@ Both plugins are written from scratch: plain PHP, separate CSS and JavaScript fi
 
 **Saxon SEO Basics** covers only what core does not: meta descriptions, Open Graph and Twitter tags, JSON-LD (Organization, WebSite, WebPage, BreadcrumbList, BlogPosting), a per page SEO title, description and noindex box, and lastmod dates in the core sitemap. Core keeps the title tag, canonical links, robots meta and `/wp-sitemap.xml`. It switches itself off if Yoast, Rank Math, All in One SEO, SEOPress or The SEO Framework is active. Set the home page description and default share image under Settings, SEO basics.
 
-**Saxon Social Login** adds "Sign in with Google" and "Sign in with Microsoft" under the normal login form. Only existing users can sign in. A verified Google address that matches a user's email works straight away; a Microsoft account is connected once from the user's profile. Client ids and secrets go in `wp-config.php` and the redirect URI is `/wp-json/saxon-sso/v1/callback`; `readme.txt` has the Google and Microsoft setup steps.
+**Saxon Social Login** adds "Sign in with Google" and "Sign in with Microsoft" under the normal login form. Only existing users can sign in, except that members of the Google Workspace domains in `SAXON_SSO_SIGNUP_DOMAINS` get a Subscriber account on their first Google sign in. A verified Google address that matches a user's email works straight away; a Microsoft account is connected once from the user's profile. Client ids and secrets go in `wp-config.php` and the redirect URI is `/wp-json/saxon-sso/v1/callback`; `readme.txt` has the Google and Microsoft setup steps.
 
 ## Email (Saxon SMTP)
 

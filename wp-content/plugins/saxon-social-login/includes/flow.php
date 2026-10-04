@@ -141,6 +141,14 @@ function saxon_sso_callback( WP_REST_Request $request ) {
 		}
 	}
 
+	// New people from an allowed Google Workspace domain get a Subscriber account.
+	if ( ! $user && 'google' === $provider ) {
+		$user = saxon_sso_register_subscriber( $claims );
+		if ( $user ) {
+			update_user_meta( $user->ID, saxon_sso_meta_key( $provider ), $subject );
+		}
+	}
+
 	if ( ! $user ) {
 		saxon_sso_fail( 'nouser' );
 	}
@@ -161,6 +169,65 @@ function saxon_sso_callback( WP_REST_Request $request ) {
 	$redirect = apply_filters( 'login_redirect', wp_validate_redirect( $requested, admin_url() ), $requested, $user );
 	wp_safe_redirect( $redirect ? $redirect : admin_url() );
 	exit;
+}
+
+/**
+ * Google Workspace domains whose members may sign up, from SAXON_SSO_SIGNUP_DOMAINS
+ * (comma separated). Empty means nobody is registered automatically.
+ *
+ * @return string[]
+ */
+function saxon_sso_signup_domains() {
+	if ( ! defined( 'SAXON_SSO_SIGNUP_DOMAINS' ) ) {
+		return array();
+	}
+	return array_values( array_filter( array_map( 'trim', explode( ',', strtolower( (string) SAXON_SSO_SIGNUP_DOMAINS ) ) ) ) );
+}
+
+/**
+ * Create a Subscriber for a verified Google Workspace account in an allowed domain.
+ *
+ * The hd (hosted domain) claim is required as well as a verified email: it is only
+ * present for accounts managed by that Workspace, not for personal Google accounts
+ * that happen to use a company address.
+ *
+ * @param array $claims Google ID token claims.
+ * @return WP_User|null
+ */
+function saxon_sso_register_subscriber( $claims ) {
+	$email  = isset( $claims['email'] ) ? strtolower( (string) $claims['email'] ) : '';
+	$domain = substr( (string) strrchr( $email, '@' ), 1 );
+	$hd     = isset( $claims['hd'] ) ? strtolower( (string) $claims['hd'] ) : '';
+
+	if ( ! is_email( $email ) || true !== ( $claims['email_verified'] ?? false ) || '' === $domain || $hd !== $domain
+		|| ! in_array( $domain, saxon_sso_signup_domains(), true ) || email_exists( $email ) ) {
+		return null;
+	}
+
+	$base  = sanitize_user( strstr( $email, '@', true ), true );
+	$base  = '' === $base ? 'user' : $base;
+	$login = $base;
+	for ( $i = 2; username_exists( $login ); $i++ ) {
+		$login = $base . $i;
+	}
+
+	$user_id = wp_insert_user(
+		array(
+			'user_login'   => $login,
+			'user_email'   => $email,
+			'user_pass'    => wp_generate_password( 32, true, true ),
+			'display_name' => isset( $claims['name'] ) ? sanitize_text_field( $claims['name'] ) : $login,
+			'first_name'   => isset( $claims['given_name'] ) ? sanitize_text_field( $claims['given_name'] ) : '',
+			'last_name'    => isset( $claims['family_name'] ) ? sanitize_text_field( $claims['family_name'] ) : '',
+			'role'         => 'subscriber',
+		)
+	);
+	if ( is_wp_error( $user_id ) ) {
+		error_log( 'Saxon Social Login: sign up failed: ' . $user_id->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+		return null;
+	}
+
+	return get_user_by( 'id', $user_id );
 }
 
 /**

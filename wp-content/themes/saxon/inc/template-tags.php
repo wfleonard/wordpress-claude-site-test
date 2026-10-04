@@ -152,3 +152,29 @@ function saxon_resolve_link( $url ) {
 	}
 	return str_starts_with( $url, '/' ) ? home_url( $url ) : $url;
 }
+
+/**
+ * Account links in the header: "Log in" for visitors, "My account" and "Log out" for signed in users.
+ * Both return to the page the visitor was on.
+ */
+function saxon_header_account() {
+	global $wp;
+	$here = home_url( add_query_arg( array(), $wp->request ? trailingslashit( $wp->request ) : '' ) );
+
+	if ( is_user_logged_in() ) {
+		printf(
+			'<a class="header-account__link" href="%1$s">%2$s</a><a class="button button--small button--outline" href="%3$s">%4$s</a>',
+			esc_url( admin_url( 'profile.php' ) ),
+			esc_html__( 'My account', 'saxon' ),
+			esc_url( wp_logout_url( $here ) ),
+			esc_html__( 'Log out', 'saxon' )
+		);
+		return;
+	}
+
+	printf(
+		'<a class="button button--small button--outline" href="%1$s">%2$s</a>',
+		esc_url( wp_login_url( $here ) ),
+		esc_html__( 'Log in', 'saxon' )
+	);
+}
