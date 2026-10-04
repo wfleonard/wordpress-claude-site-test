@@ -52,3 +52,11 @@
 	height: 18px;
 	flex: none;
 }
+
+.saxon-sso__trap {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}

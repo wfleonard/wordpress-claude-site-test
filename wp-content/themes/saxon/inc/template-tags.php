@@ -154,7 +154,7 @@ function saxon_resolve_link( $url ) {
 }
 
 /**
- * Account links in the header: "Log in" for visitors, "My account" and "Log out" for signed in users.
+ * Account links in the header: "Register" (when the site allows it) and "Log in" for visitors, "My account" and "Log out" for signed in users.
  * Both return to the page the visitor was on.
  */
 function saxon_header_account() {
@@ -172,6 +172,13 @@ function saxon_header_account() {
 		return;
 	}
 
+	if ( get_option( 'users_can_register' ) ) {
+		printf(
+			'<a class="header-account__link" href="%1$s">%2$s</a>',
+			esc_url( add_query_arg( 'redirect_to', rawurlencode( $here ), wp_registration_url() ) ),
+			esc_html__( 'Register', 'saxon' )
+		);
+	}
 	printf(
 		'<a class="button button--small button--outline" href="%1$s">%2$s</a>',
 		esc_url( wp_login_url( $here ) ),

@@ -133,24 +133,22 @@ function saxon_sso_callback( WP_REST_Request $request ) {
 	$user = saxon_sso_linked_user( $provider, $subject );
 
 	// Google confirms email ownership, so a verified Google address may match an existing user once.
+	// Accounts created from a Microsoft sign in are skipped: their email was never verified.
 	if ( ! $user && 'google' === $provider && ! empty( $claims['email'] ) && true === ( $claims['email_verified'] ?? false ) ) {
 		$by_email = get_user_by( 'email', (string) $claims['email'] );
-		if ( $by_email && ! get_user_meta( $by_email->ID, saxon_sso_meta_key( $provider ), true ) ) {
+		if ( $by_email && ! get_user_meta( $by_email->ID, saxon_sso_meta_key( $provider ), true ) && ! get_user_meta( $by_email->ID, '_saxon_sso_unverified_email', true ) ) {
 			update_user_meta( $by_email->ID, saxon_sso_meta_key( $provider ), $subject );
 			$user = $by_email;
 		}
 	}
 
-	// New people from an allowed Google Workspace domain get a Subscriber account.
-	if ( ! $user && 'google' === $provider ) {
-		$user = saxon_sso_register_subscriber( $claims );
-		if ( $user ) {
-			update_user_meta( $user->ID, saxon_sso_meta_key( $provider ), $subject );
-		}
-	}
-
+	// When the site allows registration, new people get a Subscriber account.
 	if ( ! $user ) {
-		saxon_sso_fail( 'nouser' );
+		$user = saxon_sso_register_subscriber( $provider, $claims );
+		if ( ! $user instanceof WP_User ) {
+			saxon_sso_fail( $user );
+		}
+		update_user_meta( $user->ID, saxon_sso_meta_key( $provider ), $subject );
 	}
 
 	/** This filter is documented in wp-includes/user.php */
@@ -172,36 +170,34 @@ function saxon_sso_callback( WP_REST_Request $request ) {
 }
 
 /**
- * Google Workspace domains whose members may sign up, from SAXON_SSO_SIGNUP_DOMAINS
- * (comma separated). Empty means nobody is registered automatically.
+ * Create a Subscriber for a first time Google or Microsoft sign in, when
+ * Settings, General, "Anyone can register" is on.
  *
- * @return string[]
+ * Google only reports addresses it has verified. Microsoft does not guarantee that,
+ * so those accounts are flagged and never matched to a later Google sign in by email.
+ *
+ * @param string $provider Provider slug.
+ * @param array  $claims   ID token claims.
+ * @return WP_User|string The new user, or an error code for saxon_sso_fail().
  */
-function saxon_sso_signup_domains() {
-	if ( ! defined( 'SAXON_SSO_SIGNUP_DOMAINS' ) ) {
-		return array();
+function saxon_sso_register_subscriber( $provider, $claims ) {
+	if ( ! get_option( 'users_can_register' ) ) {
+		return 'nouser';
 	}
-	return array_values( array_filter( array_map( 'trim', explode( ',', strtolower( (string) SAXON_SSO_SIGNUP_DOMAINS ) ) ) ) );
-}
 
-/**
- * Create a Subscriber for a verified Google Workspace account in an allowed domain.
- *
- * The hd (hosted domain) claim is required as well as a verified email: it is only
- * present for accounts managed by that Workspace, not for personal Google accounts
- * that happen to use a company address.
- *
- * @param array $claims Google ID token claims.
- * @return WP_User|null
- */
-function saxon_sso_register_subscriber( $claims ) {
-	$email  = isset( $claims['email'] ) ? strtolower( (string) $claims['email'] ) : '';
-	$domain = substr( (string) strrchr( $email, '@' ), 1 );
-	$hd     = isset( $claims['hd'] ) ? strtolower( (string) $claims['hd'] ) : '';
+	$email = '';
+	if ( 'google' === $provider && true === ( $claims['email_verified'] ?? false ) ) {
+		$email = (string) ( $claims['email'] ?? '' );
+	} elseif ( 'microsoft' === $provider ) {
+		$email = (string) ( $claims['email'] ?? ( $claims['preferred_username'] ?? '' ) );
+	}
+	$email = strtolower( trim( $email ) );
 
-	if ( ! is_email( $email ) || true !== ( $claims['email_verified'] ?? false ) || '' === $domain || $hd !== $domain
-		|| ! in_array( $domain, saxon_sso_signup_domains(), true ) || email_exists( $email ) ) {
-		return null;
+	if ( ! is_email( $email ) ) {
+		return 'noemail';
+	}
+	if ( email_exists( $email ) ) {
+		return 'exists';
 	}
 
 	$base  = sanitize_user( strstr( $email, '@', true ), true );
@@ -224,8 +220,14 @@ function saxon_sso_register_subscriber( $claims ) {
 	);
 	if ( is_wp_error( $user_id ) ) {
 		error_log( 'Saxon Social Login: sign up failed: ' . $user_id->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
-		return null;
+		return 'token';
 	}
+
+	if ( 'microsoft' === $provider ) {
+		update_user_meta( $user_id, '_saxon_sso_unverified_email', 1 );
+	}
+	/** This action is documented in wp-includes/user.php */
+	do_action( 'register_new_user', $user_id );
 
 	return get_user_by( 'id', $user_id );
 }

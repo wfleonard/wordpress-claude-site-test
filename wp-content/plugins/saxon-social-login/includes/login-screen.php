@@ -41,8 +41,10 @@ function saxon_sso_logo( $provider ) {
 
 /**
  * Print the buttons below the username and password form.
+ *
+ * @param bool $sign_up Label the buttons for the registration screen.
  */
-function saxon_sso_login_buttons() {
+function saxon_sso_login_buttons( $sign_up = false ) {
 	$providers = saxon_sso_providers();
 	if ( ! $providers || ! empty( $_REQUEST['interim-login'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		return;
@@ -55,8 +57,13 @@ function saxon_sso_login_buttons() {
 			'<a class="saxon-sso__button" href="%1$s">%2$s<span>%3$s</span></a>',
 			esc_url( saxon_sso_start_url( $slug, $redirect_to ) ),
 			saxon_sso_logo( $slug ), // phpcs:ignore WordPress.Security.EscapeOutput -- fixed SVG.
-			/* translators: %s: Google or Microsoft. */
-			esc_html( sprintf( __( 'Sign in with %s', 'saxon-social-login' ), $provider['label'] ) )
+			esc_html(
+				$sign_up
+					/* translators: %s: Google or Microsoft. */
+					? sprintf( __( 'Sign up with %s', 'saxon-social-login' ), $provider['label'] )
+					/* translators: %s: Google or Microsoft. */
+					: sprintf( __( 'Sign in with %s', 'saxon-social-login' ), $provider['label'] )
+			)
 		);
 	}
 	echo '</div>';
@@ -64,31 +71,35 @@ function saxon_sso_login_buttons() {
 add_action( 'login_footer', 'saxon_sso_login_buttons_footer', 1 );
 
 /**
- * Buttons go after the form on the login screen only (not lost password or register).
+ * Buttons go after the form on the login screen, and on the registration screen
+ * when the site allows registration (not on lost password).
  */
 function saxon_sso_login_buttons_footer() {
 	global $action;
-	if ( isset( $action ) && 'login' !== $action ) {
+	$screen = isset( $action ) ? $action : 'login';
+	if ( 'register' === $screen && get_option( 'users_can_register' ) ) {
+		$form = 'registerform';
+	} elseif ( 'login' === $screen ) {
+		$form = 'loginform';
+	} else {
 		return;
 	}
 	ob_start();
-	saxon_sso_login_buttons();
+	saxon_sso_login_buttons( 'registerform' === $form );
 	$html = ob_get_clean();
 	if ( $html ) {
 		// Moved into #login, right after the form, by a tiny inline script; plain links work without it.
 		echo '<template id="saxon-sso-template">' . $html . '</template>'; // phpcs:ignore WordPress.Security.EscapeOutput -- built above.
-		echo '<script>(function(){var t=document.getElementById("saxon-sso-template"),f=document.getElementById("loginform");if(t&&f){f.parentNode.insertBefore(t.content.cloneNode(true),f.nextSibling);}})();</script>';
+		echo '<script>(function(){var t=document.getElementById("saxon-sso-template"),f=document.getElementById(' . wp_json_encode( $form ) . ');if(t&&f){f.parentNode.insertBefore(t.content.cloneNode(true),f.nextSibling);}})();</script>';
 		echo '<noscript>' . $html . '</noscript>'; // phpcs:ignore WordPress.Security.EscapeOutput -- built above.
 	}
 }
 
 /**
- * Styles for the buttons.
+ * Styles for the buttons and the hidden spam field.
  */
 function saxon_sso_login_styles() {
-	if ( saxon_sso_providers() ) {
-		wp_enqueue_style( 'saxon-sso-login', SAXON_SSO_URL . 'assets/css/login.css', array(), SAXON_SSO_VERSION );
-	}
+	wp_enqueue_style( 'saxon-sso-login', SAXON_SSO_URL . 'assets/css/login.css', array(), SAXON_SSO_VERSION );
 }
 add_action( 'login_enqueue_scripts', 'saxon_sso_login_styles' );
 
@@ -105,6 +116,8 @@ function saxon_sso_message( $code ) {
 		'canceled' => __( 'Sign in was canceled.', 'saxon-social-login' ),
 		'token'    => __( 'We could not confirm your account with the provider. Please try again.', 'saxon-social-login' ),
 		'nouser'   => __( 'No user on this site is connected to that account. Sign in with your username and password, then connect the account from your profile.', 'saxon-social-login' ),
+		'exists'   => __( 'An account with that email address already exists. Sign in with your username and password, then connect this account from your profile.', 'saxon-social-login' ),
+		'noemail'  => __( 'That account did not share an email address, so we could not create an account. Please register with your email address instead.', 'saxon-social-login' ),
 		'blocked'  => __( 'Sign in is not allowed for this account.', 'saxon-social-login' ),
 		'taken'    => __( 'That account is already connected to another user.', 'saxon-social-login' ),
 	);
@@ -124,3 +137,32 @@ function saxon_sso_login_errors( $errors ) {
 	return $errors;
 }
 add_filter( 'wp_login_errors', 'saxon_sso_login_errors' );
+
+/**
+ * Spam check on the email and password registration form: a hidden field people
+ * never fill in, and a minimum of three seconds between showing and sending the form.
+ */
+function saxon_sso_register_trap() {
+	printf(
+		'<p class="saxon-sso__trap" aria-hidden="true"><label>%1$s <input type="text" name="saxon_sso_website" value="" tabindex="-1" autocomplete="off"></label></p><input type="hidden" name="saxon_sso_ts" value="%2$s">',
+		esc_html__( 'Leave this empty', 'saxon-social-login' ),
+		esc_attr( time() . '.' . wp_hash( 'saxon_sso_ts' . time() ) )
+	);
+}
+add_action( 'register_form', 'saxon_sso_register_trap' );
+
+/**
+ * @param WP_Error $errors Registration errors.
+ * @return WP_Error
+ */
+function saxon_sso_register_trap_check( $errors ) {
+	$filled = ! empty( $_POST['saxon_sso_website'] ); // phpcs:ignore WordPress.Security.NonceVerification
+	$parts  = explode( '.', isset( $_POST['saxon_sso_ts'] ) ? sanitize_text_field( wp_unslash( $_POST['saxon_sso_ts'] ) ) : '', 2 ); // phpcs:ignore WordPress.Security.NonceVerification
+	$time   = (int) $parts[0];
+	$valid  = 2 === count( $parts ) && hash_equals( wp_hash( 'saxon_sso_ts' . $time ), $parts[1] );
+	if ( $filled || ! $valid || time() - $time < 3 || time() - $time > DAY_IN_SECONDS ) {
+		$errors->add( 'saxon_sso_spam', __( 'Sorry, we could not process that registration. Please wait a moment and try again.', 'saxon-social-login' ) );
+	}
+	return $errors;
+}
+add_filter( 'registration_errors', 'saxon_sso_register_trap_check' );

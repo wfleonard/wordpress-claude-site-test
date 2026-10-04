@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Saxon Social Login
- * Description:       Adds "Sign in with Google" and "Sign in with Microsoft" to the WordPress login screen alongside the normal username and password. Only existing users can sign in, plus optional Subscriber sign up for listed Google Workspace domains. Configure with constants in wp-config.php.
+ * Description:       Adds "Sign in with Google" and "Sign in with Microsoft" to the WordPress login screen alongside the normal username and password. When the site allows registration, first time sign ins create Subscriber accounts. Configure with constants in wp-config.php.
  * Version:           1.0.0
  * Requires at least: 6.4
  * Requires PHP:      7.4
