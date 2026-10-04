@@ -148,7 +148,6 @@ function saxon_sso_callback( WP_REST_Request $request ) {
 		if ( ! $user instanceof WP_User ) {
 			saxon_sso_fail( $user );
 		}
-		update_user_meta( $user->ID, saxon_sso_meta_key( $provider ), $subject );
 	}
 
 	/** This filter is documented in wp-includes/user.php */
@@ -226,6 +225,8 @@ function saxon_sso_register_subscriber( $provider, $claims ) {
 	if ( 'microsoft' === $provider ) {
 		update_user_meta( $user_id, '_saxon_sso_unverified_email', 1 );
 	}
+	// Linked before the welcome email goes out, so it can mention the provider.
+	update_user_meta( $user_id, saxon_sso_meta_key( $provider ), (string) $claims['sub'] );
 	/** This action is documented in wp-includes/user.php */
 	do_action( 'register_new_user', $user_id );
 

@@ -14,6 +14,7 @@ define( 'SAXON_URI', get_template_directory_uri() );
 
 require SAXON_DIR . '/inc/template-tags.php';
 require SAXON_DIR . '/inc/customizer.php';
+require SAXON_DIR . '/inc/login.php';
 
 /**
  * Register theme supports, menus and image sizes.
