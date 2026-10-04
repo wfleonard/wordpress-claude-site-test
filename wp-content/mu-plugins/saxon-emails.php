@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 const SAXON_EMAIL_COMPANY = 'Saxon Enterprises';
-const SAXON_EMAIL_COLOR   = '#9b2c33';
+const SAXON_EMAIL_COLOR   = '#9d2e32';
 
 /**
  * Plain text versions of the HTML emails built in this request, keyed by a marker in the HTML.
@@ -35,7 +35,7 @@ function saxon_email_build( $heading, $paragraphs, $button = null, $after = arra
 	$logo_id = (int) get_theme_mod( 'custom_logo' );
 	$logo    = $logo_id ? wp_get_attachment_image_url( $logo_id, 'medium' ) : '';
 	$marker  = 'saxon-' . wp_generate_password( 12, false );
-	$p_style = 'margin:0 0 16px;font-size:16px;line-height:1.55;color:#1b2430;';
+	$p_style = 'margin:0 0 16px;font-size:16px;line-height:1.55;color:#222324;';
 
 	$body = '';
 	foreach ( $paragraphs as $text ) {
@@ -43,7 +43,7 @@ function saxon_email_build( $heading, $paragraphs, $button = null, $after = arra
 	}
 	if ( $button ) {
 		$body .= '<p style="margin:24px 0;"><a href="' . esc_url( $button[1] ) . '" style="display:inline-block;padding:12px 24px;border-radius:4px;background:' . SAXON_EMAIL_COLOR . ';color:#ffffff;font-weight:bold;font-size:16px;text-decoration:none;">' . esc_html( $button[0] ) . '</a></p>';
-		$body .= '<p style="margin:0 0 16px;font-size:13px;line-height:1.5;color:#4a5565;">' . esc_html__( 'If the button does not work, copy this link into your browser:', 'saxon' ) . '<br><a href="' . esc_url( $button[1] ) . '" style="color:' . SAXON_EMAIL_COLOR . ';word-break:break-all;">' . esc_html( $button[1] ) . '</a></p>';
+		$body .= '<p style="margin:0 0 16px;font-size:13px;line-height:1.5;color:#55585c;">' . esc_html__( 'If the button does not work, copy this link into your browser:', 'saxon' ) . '<br><a href="' . esc_url( $button[1] ) . '" style="color:' . SAXON_EMAIL_COLOR . ';word-break:break-all;">' . esc_html( $button[1] ) . '</a></p>';
 	}
 	foreach ( $after as $text ) {
 		$body .= '<p style="' . $p_style . '">' . nl2br( esc_html( $text ) ) . '</p>';
@@ -54,15 +54,15 @@ function saxon_email_build( $heading, $paragraphs, $button = null, $after = arra
 		: '<span style="font-family:Georgia,serif;font-size:24px;font-weight:bold;color:' . SAXON_EMAIL_COLOR . ';">' . esc_html( SAXON_EMAIL_COMPANY ) . '</span>';
 
 	$html = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $heading ) . '</title></head>'
-		. '<body style="margin:0;padding:0;background:#f5f7fa;" data-saxon="' . esc_attr( $marker ) . '">'
-		. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;"><tr><td align="center" style="padding:32px 16px;">'
+		. '<body style="margin:0;padding:0;background:#f5f5f6;" data-saxon="' . esc_attr( $marker ) . '">'
+		. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f6;"><tr><td align="center" style="padding:32px 16px;">'
 		. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:8px;border-top:4px solid ' . SAXON_EMAIL_COLOR . ';">'
 		. '<tr><td style="padding:28px 32px 8px;">' . $brand . '</td></tr>'
 		. '<tr><td style="padding:16px 32px 24px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">'
-		. '<h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:#1b2430;">' . esc_html( $heading ) . '</h1>' . $body
-		. '<p style="margin:24px 0 0;font-size:16px;line-height:1.55;color:#1b2430;">' . esc_html__( 'Kind regards,', 'saxon' ) . '<br>' . esc_html( SAXON_EMAIL_COMPANY ) . '</p>'
+		. '<h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:#222324;">' . esc_html( $heading ) . '</h1>' . $body
+		. '<p style="margin:24px 0 0;font-size:16px;line-height:1.55;color:#222324;">' . esc_html__( 'Kind regards,', 'saxon' ) . '<br>' . esc_html( SAXON_EMAIL_COMPANY ) . '</p>'
 		. '</td></tr></table>'
-		. '<p style="max-width:560px;margin:16px auto 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.5;color:#6b7684;">'
+		. '<p style="max-width:560px;margin:16px auto 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.5;color:#6d6e71;">'
 		. esc_html( SAXON_EMAIL_COMPANY . ', Inc. · ' . $site ) . '</p>'
 		. '</td></tr></table></body></html>';
 

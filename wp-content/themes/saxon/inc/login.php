@@ -23,15 +23,15 @@ function saxon_login_logo_url() {
  */
 function saxon_login_styles() {
 	$css = sprintf(
-		'body.login{background:#f5f7fa;}
+		'body.login{background:#f5f5f6;}
 		.login h1 a{background-image:url(%s);background-size:contain;background-position:center;width:260px;max-width:100%%;height:150px;margin-bottom:16px;}
 		.login #login{width:340px;max-width:calc(100%% - 32px);padding-top:6vh;}
-		.login form{border:1px solid #d6dce4;border-top:4px solid #9b2c33;border-radius:8px;box-shadow:0 6px 18px rgb(16 32 56 / 10%%);}
-		.wp-core-ui .button-primary{background:#9b2c33;border-color:#9b2c33;}
-		.wp-core-ui .button-primary:hover,.wp-core-ui .button-primary:focus{background:#7d2329;border-color:#7d2329;}
-		.login #nav a,.login #backtoblog a{color:#4a5565;}
-		.login #nav a:hover,.login #backtoblog a:hover,.login a:focus{color:#9b2c33;}
-		.login input[type=text]:focus,.login input[type=password]:focus,.login input[type=email]:focus{border-color:#9b2c33;box-shadow:0 0 0 1px #9b2c33;}',
+		.login form{border:1px solid #dcdddf;border-top:4px solid #9d2e32;border-radius:8px;box-shadow:0 6px 18px rgb(30 30 32 / 10%%);}
+		.wp-core-ui .button-primary{background:#9d2e32;border-color:#9d2e32;}
+		.wp-core-ui .button-primary:hover,.wp-core-ui .button-primary:focus{background:#7a2226;border-color:#7a2226;}
+		.login #nav a,.login #backtoblog a{color:#55585c;}
+		.login #nav a:hover,.login #backtoblog a:hover,.login a:focus{color:#9d2e32;}
+		.login input[type=text]:focus,.login input[type=password]:focus,.login input[type=email]:focus{border-color:#9d2e32;box-shadow:0 0 0 1px #9d2e32;}',
 		esc_url( saxon_login_logo_url() )
 	);
 	wp_register_style( 'saxon-login', false, array(), SAXON_VERSION );
