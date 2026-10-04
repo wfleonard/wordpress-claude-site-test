@@ -2,7 +2,7 @@
  * Saxon SEO Basics admin: character counters and the share image picker.
  * No jQuery.
  *
- * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ * Author: William Leonard, Saxon Enterprises, Inc.
  */
 ( function () {
 	'use strict';

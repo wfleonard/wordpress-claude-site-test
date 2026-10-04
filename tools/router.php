@@ -3,7 +3,7 @@
  * Router for PHP's built in server so WordPress pretty permalinks work locally.
  * Usage (from the WordPress root): php -S localhost:8080 path/to/tools/router.php
  *
- * @author William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author William Leonard, Saxon Enterprises, Inc.
  */
 
 $saxon_path = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );

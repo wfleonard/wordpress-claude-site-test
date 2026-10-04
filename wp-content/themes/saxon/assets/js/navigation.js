@@ -1,6 +1,6 @@
 /**
  * Saxon primary navigation.
- * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ * Author: William Leonard, Saxon Enterprises, Inc.
  *
  * Toggles the small screen menu, keeps aria-expanded in sync, closes on
  * Escape, outside click, or when the viewport grows to the desktop layout,

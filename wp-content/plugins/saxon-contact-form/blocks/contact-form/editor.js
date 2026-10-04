@@ -2,7 +2,7 @@
  * Editor registration for the Contact form block. Plain JavaScript using the
  * globals WordPress provides, so no build step is needed.
  *
- * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ * Author: William Leonard, Saxon Enterprises, Inc.
  */
 ( function ( wp ) {
 	'use strict';
