@@ -24,6 +24,7 @@ define( 'SAXON_CF_URL', plugin_dir_url( __FILE__ ) );
 require SAXON_CF_DIR . 'includes/settings.php';
 require SAXON_CF_DIR . 'includes/fields.php';
 require SAXON_CF_DIR . 'includes/render.php';
+require SAXON_CF_DIR . 'includes/spam.php';
 require SAXON_CF_DIR . 'includes/handler.php';
 require SAXON_CF_DIR . 'includes/messages.php';
 

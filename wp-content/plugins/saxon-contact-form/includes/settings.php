@@ -125,6 +125,7 @@ function saxon_cf_settings_page() {
 	<div class="wrap">
 		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 		<p><?php esc_html_e( 'Add the form to any page with the Contact form block or the [saxon_contact_form] shortcode.', 'saxon-contact-form' ); ?></p>
+		<?php saxon_cf_spam_summary(); ?>
 		<form action="options.php" method="post">
 			<?php
 			settings_fields( 'saxon_cf' );
@@ -189,4 +190,32 @@ function saxon_cf_field_store() {
 		esc_html__( 'Save each message under Messages in the dashboard', 'saxon-contact-form' ),
 		esc_html__( 'A safety net in case an email is lost. Messages are included in the WordPress personal data export and erase tools.', 'saxon-contact-form' )
 	);
+}
+
+/**
+ * "Spam blocked" summary on the settings screen.
+ */
+function saxon_cf_spam_summary() {
+	$stats  = get_option( 'saxon_cf_spam_stats', array() );
+	$counts = is_array( $stats ) && ! empty( $stats['counts'] ) ? $stats['counts'] : array();
+	$labels = saxon_cf_reason_labels();
+	echo '<h2>' . esc_html__( 'Spam protection', 'saxon-contact-form' ) . '</h2>';
+	echo '<p>' . esc_html__( 'Bots are refused quietly. Messages that only look like spam are not emailed; with "Keep a copy" on they are saved under Messages as Pending, marked Spam?, so you can check them.', 'saxon-contact-form' ) . '</p>';
+	if ( ! $counts ) {
+		echo '<p>' . esc_html__( 'Nothing blocked yet.', 'saxon-contact-form' ) . '</p>';
+		return;
+	}
+	arsort( $counts );
+	echo '<p>' . esc_html(
+		sprintf(
+			/* translators: 1: total, 2: date. */
+			__( '%1$d submissions blocked since %2$s:', 'saxon-contact-form' ),
+			array_sum( $counts ),
+			wp_date( get_option( 'date_format' ), (int) $stats['since'] )
+		)
+	) . '</p><ul class="ul-disc">';
+	foreach ( $counts as $reason => $count ) {
+		echo '<li>' . esc_html( ( $labels[ $reason ] ?? $reason ) . ': ' . number_format_i18n( $count ) ) . '</li>';
+	}
+	echo '</ul>';
 }

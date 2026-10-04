@@ -32,3 +32,14 @@ $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$wpdb->esc_like( '_transient_timeout_saxon_cf_' ) . '%'
 	)
 );
+
+// Spam statistics, rate counters, used form tokens and the cleanup event.
+delete_option( 'saxon_cf_spam_stats' );
+wp_clear_scheduled_hook( 'saxon_cf_cleanup' );
+$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$wpdb->prepare(
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+		$wpdb->esc_like( 'saxon_cf_c_' ) . '%',
+		$wpdb->esc_like( 'saxon_cf_u_' ) . '%'
+	)
+);
