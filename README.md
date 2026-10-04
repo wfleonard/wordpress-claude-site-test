@@ -13,6 +13,8 @@ wp-content/plugins/saxon-seo-basics/    SEO basics plugin (meta, social tags, sc
 wp-content/plugins/saxon-social-login/ Sign in with Google or Microsoft on the login screen
 wp-content/mu-plugins/saxon-smtp.php    Sends all WordPress email through Google Workspace
 wp-content/mu-plugins/saxon-emails.php  Saxon Enterprises branded account emails
+content/home.html                       Block content of the home page (portfolio, services, process)
+content/pricing.html                    Block content of the Pricing page (sample packages)
 tools/seed-content.php                  Creates the starter pages, menus and reading settings
 tools/router.php                        Router for PHP's built in server (local testing only)
 tools/dev-mail-log.php                  Must use plugin that logs wp_mail() to a file (local testing only)
@@ -25,7 +27,8 @@ Markup lives in PHP templates, styles in `assets/css/main.css`, behavior in `ass
 
 * Responsive layout with a fluid type scale and a collapsible small screen menu (works without JavaScript too).
 * Accessibility: skip link, visible focus, landmark labels, `aria-expanded` menu toggle with Escape to close, 44px touch targets, AA colour contrast, reduced motion support.
-* Page templates: **About**, **Services** (lists child pages as cards) and **Contact** (content column plus contact details).
+* Page templates: **About**, **Services** (lists child pages as cards), **Contact** (content column plus contact details) and **Wide** (a wide content area for card grids, columns and pricing tables).
+* Block styles: **Card** and **Pricing card** for Group and Column blocks. Add the class `is-featured` to highlight one pricing card, `pricing-badge` to a paragraph for its label, `pricing-price` and `pricing-period` for the price line. `work-card`, `eyebrow`, `steps` and `step-number` style the home page portfolio and process sections.
 * Static home page (`front-page.php`) with an editable hero, the Home page content and the latest posts.
 * Header: a **Log in** button for visitors (plus **Register** when the site allows registration), and **My account** and **Log out** for signed in users, each returning to the current page.
 * Login, registration and password screens show the Saxon Enterprises logo (the Customizer logo, or `assets/images/saxon-enterprises-logo.png`) in the brand red. `assets/images/saxon-icon.png` is the 512px site icon to set under Appearance, Customize, Site Identity.

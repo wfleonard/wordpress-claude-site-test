@@ -1,0 +1,40 @@
+<!-- title: Fewer plugins, fewer problems: why our WordPress sites run lean -->
+<!-- excerpt: Most WordPress trouble starts with plugins. Here is how we keep the list short and what we build instead. -->
+<!-- wp:paragraph -->
+<p>A typical WordPress site we are asked to take over runs somewhere between twenty and forty plugins. A page builder, a slider, two form plugins, a security suite, an SEO suite, a caching plugin, a cookie banner and a long tail of small helpers that someone installed once and forgot. Each one is code written by a stranger, updated on its own schedule, with its own idea of what your site should look like.</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph -->
+<p>We take the opposite approach. Our sites run on a handful of plugins, and most of those we wrote ourselves.</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Why fewer is better</h2>
+<!-- /wp:heading -->
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li><strong>Security.</strong> Most WordPress compromises come through plugins, not WordPress itself. Every plugin you remove is a door that no longer exists.</li>
+<!-- /wp:list-item --><!-- wp:list-item -->
+<li><strong>Speed.</strong> Plugins load their own scripts and styles on every page, whether that page needs them or not. Lean sites load faster, which helps visitors and search rankings alike.</li>
+<!-- /wp:list-item --><!-- wp:list-item -->
+<li><strong>Stability.</strong> When forty plugins update on forty schedules, something eventually conflicts. With a short list, updates are routine instead of risky.</li>
+<!-- /wp:list-item --><!-- wp:list-item -->
+<li><strong>Clarity.</strong> When something behaves oddly, there are only a few places to look.</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+<!-- wp:heading -->
+<h2 class="wp-block-heading">What we build instead</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p>On this site, a custom theme replaces the page builder. Our own contact form handles validation, spam traps and rate limiting in a few hundred lines of plain PHP. A small SEO plugin adds only what WordPress does not already do: meta descriptions, social sharing tags and structured data. Sign in with Google and Microsoft, branded account emails and email delivery through Google Workspace are each one small, focused file.</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph -->
+<p>When we recently removed a page builder plugin from this very site, two old demo pages broke because they depended on its blocks. We rebuilt them with standard WordPress blocks and a few lines of theme CSS, and the site now has one less thing to update forever.</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading -->
+<h2 class="wp-block-heading">When a plugin is the right call</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p>We are not against plugins. Spam filtering backed by a large shared database, or a security tool provided by your host, are good examples of things worth adopting. The test we apply is simple: does this plugin do something we could not reasonably build and maintain ourselves, and is it maintained by people we trust? If the answer is no, we write the feature.</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph -->
+<p><a href="/contact/">Ask us for a plugin audit</a> and we will tell you which of yours you can safely retire.</p>
+<!-- /wp:paragraph -->

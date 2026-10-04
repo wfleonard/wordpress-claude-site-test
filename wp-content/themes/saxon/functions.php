@@ -183,3 +183,20 @@ function saxon_register_block_styles() {
 	}
 }
 add_action( 'init', 'saxon_register_block_styles' );
+
+/**
+ * Pricing card style for Column and Group blocks. Add the extra CSS class
+ * "is-featured" to highlight one card.
+ */
+function saxon_register_pricing_style() {
+	foreach ( array( 'core/group', 'core/column' ) as $block ) {
+		register_block_style(
+			$block,
+			array(
+				'name'  => 'pricing',
+				'label' => __( 'Pricing card', 'saxon' ),
+			)
+		);
+	}
+}
+add_action( 'init', 'saxon_register_pricing_style' );
