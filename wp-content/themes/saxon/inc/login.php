@@ -29,6 +29,7 @@ function saxon_login_styles() {
 		.login form{border:1px solid #dcdddf;border-top:4px solid #9d2e32;border-radius:8px;box-shadow:0 6px 18px rgb(30 30 32 / 10%%);}
 		.wp-core-ui .button-primary{background:#9d2e32;border-color:#9d2e32;}
 		.wp-core-ui .button-primary:hover,.wp-core-ui .button-primary:focus{background:#7a2226;border-color:#7a2226;}
+		.login .message,.login .notice-info,.login .success{border-left-color:#9d2e32;}
 		.login #nav a,.login #backtoblog a{color:#55585c;}
 		.login #nav a:hover,.login #backtoblog a:hover,.login a:focus{color:#9d2e32;}
 		.login input[type=text]:focus,.login input[type=password]:focus,.login input[type=email]:focus{border-color:#9d2e32;box-shadow:0 0 0 1px #9d2e32;}',
