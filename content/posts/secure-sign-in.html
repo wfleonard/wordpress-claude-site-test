@@ -1,0 +1,37 @@
+<!-- title: Secure sign in without the guesswork -->
+<!-- excerpt: Why our sites let people sign in with Google or Microsoft, and the details that make it safe. -->
+<!-- wp:paragraph -->
+<p>Passwords are the weakest part of most websites. People reuse them, forget them and type them into the wrong page. So on the sites we manage, we make the password optional.</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Sign in with the account you already trust</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p>Visitors and staff can sign in with Google or Microsoft, using the same account they use for email every day. The site never sees that password. Google or Microsoft confirms who the person is and hands back a verified name and email address, and that is all we receive. If your Google or Microsoft account has two step verification turned on, your website login now benefits from it automatically.</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Done properly, not just quickly</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p>Social login plugins are common, and some cut corners. Ours follows the OpenID Connect standard closely:</p>
+<!-- /wp:paragraph -->
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Each sign in uses a one time code and a secret proof (PKCE) so an intercepted link is useless.</li>
+<!-- /wp:list-item --><!-- wp:list-item -->
+<li>The site checks who issued the response, who it was for and when it expires before trusting it.</li>
+<!-- /wp:list-item --><!-- wp:list-item -->
+<li>A Microsoft account is never matched to an existing user by email alone, because Microsoft does not always verify email addresses. It has to be connected from the user's profile first.</li>
+<!-- /wp:list-item --><!-- wp:list-item -->
+<li>New accounts are only ever created as Subscribers, never with editing or admin rights.</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Everything around the login matters too</h2>
+<!-- /wp:heading -->
+<!-- wp:paragraph -->
+<p>A secure login is only part of the story. On our sites, account emails such as welcome messages and password resets go out through your own Google Workspace account instead of the web server, so they arrive in inboxes instead of spam folders. Registration forms include hidden traps that stop bots without making real people solve puzzles. And because the normal username and password still work, nobody is ever locked out if a provider has a bad day.</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph -->
+<p><a href="/wp-login.php">Try it on this site</a>: the Google and Microsoft buttons are live.</p>
+<!-- /wp:paragraph -->
