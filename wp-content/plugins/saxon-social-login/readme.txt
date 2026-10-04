@@ -1,5 +1,5 @@
 === Saxon Social Login ===
-Contributors: williamleonard
+Contributors: William Leonard, Saxon Enterprises, Inc.
 Requires at least: 6.4
 Requires PHP: 7.4
 Stable tag: 1.0.0

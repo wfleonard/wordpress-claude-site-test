@@ -3,7 +3,7 @@
  * "Connected sign in accounts" section on the user's own profile screen.
  *
  * @package SaxonSocialLogin
- * @author  William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author  William Leonard, Saxon Enterprises, Inc.
  */
 
 defined( 'ABSPATH' ) || exit;

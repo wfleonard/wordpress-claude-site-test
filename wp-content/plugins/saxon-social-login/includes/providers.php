@@ -3,7 +3,7 @@
  * Provider settings (Google and Microsoft) read from wp-config.php constants.
  *
  * @package SaxonSocialLogin
- * @author  William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author  William Leonard, Saxon Enterprises, Inc.
  */
 
 defined( 'ABSPATH' ) || exit;

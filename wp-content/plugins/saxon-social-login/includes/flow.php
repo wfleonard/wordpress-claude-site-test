@@ -7,7 +7,7 @@
  * so its claims are trusted without a signature check (OpenID Connect Core 3.1.3.7).
  *
  * @package SaxonSocialLogin
- * @author  William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author  William Leonard, Saxon Enterprises, Inc.
  */
 
 defined( 'ABSPATH' ) || exit;

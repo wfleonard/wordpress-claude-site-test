@@ -5,13 +5,12 @@
  * Version:           1.0.0
  * Requires at least: 6.4
  * Requires PHP:      7.4
- * Author:            William Leonard, CTI Global
- * Author URI:        mailto:bill.leonard@cticorp.com
+ * Author:            William Leonard, Saxon Enterprises, Inc.
  * License:           GPL-2.0-or-later
  * Text Domain:       saxon-social-login
  *
  * @package SaxonSocialLogin
- * @author  William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author  William Leonard, Saxon Enterprises, Inc.
  */
 
 defined( 'ABSPATH' ) || exit;
