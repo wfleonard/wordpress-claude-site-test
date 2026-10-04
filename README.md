@@ -10,7 +10,9 @@ Author: William Leonard, CTI Global, bill.leonard@cticorp.com
 wp-content/themes/saxon/                Custom "Saxon" theme (copy this folder to the server)
 wp-content/plugins/saxon-contact-form/  Contact form plugin
 wp-content/plugins/saxon-seo-basics/    SEO basics plugin (meta, social tags, schema)
+wp-content/plugins/saxon-social-login/ Sign in with Google or Microsoft on the login screen
 wp-content/mu-plugins/saxon-smtp.php    Sends all WordPress email through Google Workspace
+wp-content/mu-plugins/saxon-emails.php  Saxon Enterprises branded account emails
 tools/seed-content.php                  Creates the starter pages, menus and reading settings
 tools/router.php                        Router for PHP's built in server (local testing only)
 tools/dev-mail-log.php                  Must use plugin that logs wp_mail() to a file (local testing only)
@@ -25,6 +27,8 @@ Markup lives in PHP templates, styles in `assets/css/main.css`, behavior in `ass
 * Accessibility: skip link, visible focus, landmark labels, `aria-expanded` menu toggle with Escape to close, 44px touch targets, AA colour contrast, reduced motion support.
 * Page templates: **About**, **Services** (lists child pages as cards) and **Contact** (content column plus contact details).
 * Static home page (`front-page.php`) with an editable hero, the Home page content and the latest posts.
+* Header: a **Log in** button for visitors (plus **Register** when the site allows registration), and **My account** and **Log out** for signed in users, each returning to the current page.
+* Login, registration and password screens show the Saxon Enterprises logo (the Customizer logo, or `assets/images/saxon-enterprises-logo.png`) in the brand red. `assets/images/saxon-icon.png` is the 512px site icon to set under Appearance, Customize, Site Identity.
 * Customizer: **Home page hero** (heading, text, two buttons) and **Contact details** (phone, email, address, hours) shown in the footer and on the Contact page.
 * `theme.json` supplies the editor colour palette and font sizes; a **Card** block style is registered for Group and Column blocks.
 
@@ -41,6 +45,12 @@ Both plugins are written from scratch: plain PHP, separate CSS and JavaScript fi
 * Works without JavaScript; with it, inline validation and submit without reload.
 
 **Saxon SEO Basics** covers only what core does not: meta descriptions, Open Graph and Twitter tags, JSON-LD (Organization, WebSite, WebPage, BreadcrumbList, BlogPosting), a per page SEO title, description and noindex box, and lastmod dates in the core sitemap. Core keeps the title tag, canonical links, robots meta and `/wp-sitemap.xml`. It switches itself off if Yoast, Rank Math, All in One SEO, SEOPress or The SEO Framework is active. Set the home page description and default share image under Settings, SEO basics.
+
+**Saxon Social Login** adds "Sign in with Google" and "Sign in with Microsoft" under the normal login form. When Settings, General, "Anyone can register" is on, a first time Google or Microsoft sign in creates a Subscriber account (and the email and password registration form gets a spam trap); otherwise only existing users can sign in. A verified Google address that matches a user's email works straight away; a Microsoft account is connected once from the user's profile. Client ids and secrets go in `wp-config.php` and the redirect URI is `/wp-json/saxon-sso/v1/callback`; `readme.txt` has the Google and Microsoft setup steps.
+
+## Account emails (Saxon Emails)
+
+`wp-content/mu-plugins/saxon-emails.php` replaces the WordPress welcome, new user notice, password reset, password changed and password set notices with Saxon Enterprises branded HTML emails (logo from the Customizer, plain text version included). People who signed up with Google or Microsoft are told they can keep using that button and that a password is optional.
 
 ## Email (Saxon SMTP)
 
@@ -71,4 +81,4 @@ Activate both plugins under Plugins. With `dev-mail-log.php` installed, contact 
 
 ## Deploying
 
-Upload `wp-content/themes/saxon` to the server's `wp-content/themes/` and both folders under `wp-content/plugins/` to the server's `wp-content/plugins/` (never `tools/dev-mail-log.php`), upload `wp-content/mu-plugins/saxon-smtp.php` to the server's `wp-content/mu-plugins/` and add its `wp-config.php` lines, activate the theme under Appearance, Themes and the plugins under Plugins, then assign page templates and menus (or run `wp eval-file tools/seed-content.php` after a database backup).
+Upload `wp-content/themes/saxon` to the server's `wp-content/themes/` and both folders under `wp-content/plugins/` to the server's `wp-content/plugins/` (never `tools/dev-mail-log.php`), upload `wp-content/mu-plugins/saxon-smtp.php` and `saxon-emails.php` to the server's `wp-content/mu-plugins/` and add its `wp-config.php` lines, activate the theme under Appearance, Themes and the plugins under Plugins, then assign page templates and menus (or run `wp eval-file tools/seed-content.php` after a database backup).

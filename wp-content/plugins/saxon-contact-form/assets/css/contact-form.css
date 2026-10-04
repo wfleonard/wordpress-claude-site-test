@@ -7,8 +7,8 @@
  */
 
 .saxon-cf {
-	--saxon-cf-ink: var(--color-ink, #1b2430);
-	--saxon-cf-soft: var(--color-ink-soft, #4a5565);
+	--saxon-cf-ink: var(--color-ink, #222324);
+	--saxon-cf-soft: var(--color-ink-soft, #55585c);
 	--saxon-cf-border: #8a94a3;
 	--saxon-cf-error: #b3261e;
 	--saxon-cf-error-bg: #fdecea;
@@ -97,7 +97,7 @@
 	width: 1.25rem;
 	height: 1.25rem;
 	margin: 0.15rem 0 0;
-	accent-color: var(--color-primary, #12355b);
+	accent-color: var(--color-primary, #9d2e32);
 }
 
 .saxon-cf__field--consent label {
@@ -154,8 +154,8 @@
 }
 
 .saxon-cf__status--info {
-	background: var(--color-primary-light, #e8eef6);
-	color: var(--color-primary, #12355b);
+	background: var(--color-primary-light, #f6e9ea);
+	color: var(--color-primary, #9d2e32);
 }
 
 .saxon-cf__editor-note {

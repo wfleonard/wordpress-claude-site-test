@@ -10,12 +10,12 @@
 			"defaultGradients": false,
 			"defaultDuotone": false,
 			"palette": [
-				{ "slug": "primary", "name": "Primary", "color": "#12355b" },
-				{ "slug": "primary-dark", "name": "Primary dark", "color": "#0b2440" },
-				{ "slug": "primary-light", "name": "Primary light", "color": "#e8eef6" },
-				{ "slug": "accent", "name": "Accent", "color": "#b4510a" },
-				{ "slug": "ink", "name": "Ink", "color": "#1b2430" },
-				{ "slug": "surface-alt", "name": "Light grey", "color": "#f5f7fa" },
+				{ "slug": "primary", "name": "Primary", "color": "#9d2e32" },
+				{ "slug": "primary-dark", "name": "Primary dark", "color": "#7a2226" },
+				{ "slug": "primary-light", "name": "Primary light", "color": "#f6e9ea" },
+				{ "slug": "accent", "name": "Saxon gray", "color": "#bbbdc0" },
+				{ "slug": "ink", "name": "Ink", "color": "#222324" },
+				{ "slug": "surface-alt", "name": "Light gray", "color": "#f5f5f6" },
 				{ "slug": "white", "name": "White", "color": "#ffffff" }
 			]
 		},

@@ -1,0 +1,62 @@
+/* Saxon Social Login: buttons under the WordPress login form. */
+.saxon-sso {
+	margin-top: 16px;
+	padding: 0 24px 8px;
+}
+
+.saxon-sso__or {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0 0 12px;
+	color: #50575e;
+	font-size: 13px;
+}
+
+.saxon-sso__or::before,
+.saxon-sso__or::after {
+	content: "";
+	flex: 1;
+	border-top: 1px solid #dcdcde;
+}
+
+.saxon-sso__button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 44px;
+	margin-bottom: 8px;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	background: #fff;
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration: none;
+}
+
+.saxon-sso__button:hover {
+	border-color: #1d2327;
+	color: #1d2327;
+}
+
+.saxon-sso__button:focus {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+.saxon-sso__logo {
+	width: 18px;
+	height: 18px;
+	flex: none;
+}
+
+.saxon-sso__trap {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}

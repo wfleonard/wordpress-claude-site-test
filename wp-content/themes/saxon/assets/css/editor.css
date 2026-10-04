@@ -4,7 +4,7 @@
  */
 
 body {
-	color: #1b2430;
+	color: #222324;
 	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 	font-size: 1.0625rem;
 	line-height: 1.65;
@@ -17,41 +17,41 @@ h4,
 h5,
 h6,
 .editor-post-title__input {
-	color: #0b2440;
+	color: #7a2226;
 	font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 	font-weight: 700;
 	line-height: 1.2;
 }
 
 a {
-	color: #12355b;
+	color: #9d2e32;
 	text-underline-offset: 0.18em;
 }
 
 blockquote {
-	border-left: 4px solid #b4510a;
+	border-left: 4px solid #bbbdc0;
 	font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 	font-style: italic;
 }
 
 .wp-block-button__link {
-	border: 2px solid #12355b;
+	border: 2px solid #9d2e32;
 	border-radius: 4px;
-	background: #12355b;
+	background: #9d2e32;
 	color: #fff;
 	font-weight: 700;
 }
 
 .is-style-outline .wp-block-button__link {
 	background: transparent;
-	color: #12355b;
+	color: #9d2e32;
 }
 
 .wp-block-group.is-style-card,
 .wp-block-column.is-style-card {
 	padding: 1.5rem;
-	border: 1px solid #d6dce4;
+	border: 1px solid #dcdddf;
 	border-radius: 14px;
 	background: #fff;
-	box-shadow: 0 1px 2px rgb(16 32 56 / 8%), 0 1px 3px rgb(16 32 56 / 6%);
+	box-shadow: 0 1px 2px rgb(30 30 32 / 8%), 0 1px 3px rgb(30 30 32 / 6%);
 }
