@@ -42,10 +42,9 @@ defined( 'ABSPATH' ) || exit;
 		<p>
 			<?php
 			printf(
-				/* translators: 1: year, 2: company name. */
-				esc_html__( '&copy; %1$s %2$s. All rights reserved.', 'saxon' ),
-				esc_html( wp_date( 'Y' ) ),
-				'Saxon Enterprises, Inc.'
+				/* translators: %s: year. */
+				esc_html__( '&copy; %s Saxon Enterprises, Inc. All rights reserved.', 'saxon' ),
+				esc_html( wp_date( 'Y' ) )
 			);
 			?>
 		</p>
