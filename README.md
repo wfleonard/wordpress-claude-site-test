@@ -13,6 +13,7 @@ wp-content/plugins/saxon-seo-basics/    SEO basics plugin (meta, social tags, sc
 wp-content/plugins/saxon-social-login/ Sign in with Google or Microsoft on the login screen
 wp-content/mu-plugins/saxon-smtp.php    Sends all WordPress email through Google Workspace
 wp-content/mu-plugins/saxon-emails.php  Saxon Enterprises branded account emails
+wp-content/mu-plugins/saxon-main-site.php  Ties this site to saxonenterprises.net (schema, canonicals, banner)
 content/home.html                       Block content of the home page (portfolio, services, process)
 content/pricing.html                    Block content of the Pricing page (sample packages)
 tools/seed-content.php                  Creates the starter pages, menus and reading settings
@@ -51,6 +52,16 @@ Both plugins are written from scratch: plain PHP, separate CSS and JavaScript fi
 
 **Saxon Social Login** adds "Sign in with Google" and "Sign in with Microsoft" under the normal login form. When Settings, General, "Anyone can register" is on, a first time Google or Microsoft sign in creates a Subscriber account (and the email and password registration form gets a spam trap); otherwise only existing users can sign in. A verified Google address that matches a user's email works straight away; a Microsoft account is connected once from the user's profile. Client ids and secrets go in `wp-config.php` and the redirect URI is `/wp-json/saxon-sso/v1/callback`; `readme.txt` has the Google and Microsoft setup steps.
 
+## Main site link (Saxon Main Site)
+
+`wp-content/mu-plugins/saxon-main-site.php` presents this site as the WordPress workshop of Saxon Enterprises, Inc. rather than a separate business, so search engines and AI assistants credit saxonenterprises.net:
+
+* The Saxon SEO Basics graph names the same organization as saxonenterprises.net (`https://saxonenterprises.net/#org`, Tinton Falls, NJ, (732) 673-4260) instead of a local one.
+* The home, Work, Services, Pricing, About and Contact pages repeat the main site, so their canonical points to the matching saxonenterprises.net page. Blog posts keep their own.
+* A banner under `wp_body_open` links to the main site; the theme footer credits Saxon Enterprises, Inc.
+
+Keep the organization details identical to saxonenterprises.net (`scripts/build.mjs`, `ORG`).
+
 ## Account emails (Saxon Emails)
 
 `wp-content/mu-plugins/saxon-emails.php` replaces the WordPress welcome, new user notice, password reset, password changed and password set notices with Saxon Enterprises branded HTML emails (logo from the Customizer, plain text version included). People who signed up with Google or Microsoft are told they can keep using that button and that a password is optional.
@@ -84,4 +95,4 @@ Activate both plugins under Plugins. With `dev-mail-log.php` installed, contact 
 
 ## Deploying
 
-Upload `wp-content/themes/saxon` to the server's `wp-content/themes/` and both folders under `wp-content/plugins/` to the server's `wp-content/plugins/` (never `tools/dev-mail-log.php`), upload `wp-content/mu-plugins/saxon-smtp.php` and `saxon-emails.php` to the server's `wp-content/mu-plugins/` and add its `wp-config.php` lines, activate the theme under Appearance, Themes and the plugins under Plugins, then assign page templates and menus (or run `wp eval-file tools/seed-content.php` after a database backup).
+Upload `wp-content/themes/saxon` to the server's `wp-content/themes/` and both folders under `wp-content/plugins/` to the server's `wp-content/plugins/` (never `tools/dev-mail-log.php`), upload `wp-content/mu-plugins/saxon-smtp.php`, `saxon-emails.php` and `saxon-main-site.php` to the server's `wp-content/mu-plugins/` and add its `wp-config.php` lines, activate the theme under Appearance, Themes and the plugins under Plugins, then assign page templates and menus (or run `wp eval-file tools/seed-content.php` after a database backup).
