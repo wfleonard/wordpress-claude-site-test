@@ -2,7 +2,7 @@
 
 Custom WordPress theme and tooling for saxonwordpress.com.
 
-Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+Author: William Leonard, Saxon Enterprises, Inc.
 
 ## Layout
 

@@ -4,7 +4,7 @@
  * from the Plugins screen. Deactivating the plugin keeps everything.
  *
  * @package SaxonContactForm
- * @author  William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author  William Leonard, Saxon Enterprises, Inc.
  */
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;

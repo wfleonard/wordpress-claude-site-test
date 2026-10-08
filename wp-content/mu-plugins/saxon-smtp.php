@@ -3,7 +3,7 @@
  * Plugin Name: Saxon SMTP
  * Description: Sends all WordPress email through Google Workspace. Uses the SMTP relay (smtp-relay.gmail.com, allowed by server IP, no password) unless an App Password is set. Does nothing until SAXON_SMTP_FROM is defined in wp-config.php.
  * Version:     1.1.1
- * Author:      William Leonard
+ * Author:      William Leonard, Saxon Enterprises, Inc.
  *
  * wp-config.php (above "That's all, stop editing!"):
  *   define( 'SAXON_SMTP_FROM', 'you@yourdomain.com' );   // address in your Workspace domain that mail is sent from

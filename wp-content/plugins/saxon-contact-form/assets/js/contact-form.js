@@ -4,7 +4,7 @@
  * Progressive enhancement only. Without JavaScript the form posts normally
  * and the server redirects back with the result. No jQuery.
  *
- * Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+ * Author: William Leonard, Saxon Enterprises, Inc.
  */
 ( function () {
 	'use strict';

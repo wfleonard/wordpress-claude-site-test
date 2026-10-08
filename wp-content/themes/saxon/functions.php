@@ -3,7 +3,7 @@
  * Saxon theme bootstrap.
  *
  * @package Saxon
- * @author  William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author  William Leonard, Saxon Enterprises, Inc.
  */
 
 defined( 'ABSPATH' ) || exit;

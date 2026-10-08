@@ -1,11 +1,11 @@
 === Saxon Contact Form ===
-Contributors: William Leonard, CTI Global
+Contributors: William Leonard, Saxon Enterprises, Inc.
 Requires at least: 6.4
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv2 or later
 
-Accessible contact form for saxonwordpress.com. Author: William Leonard, CTI Global, bill.leonard@cticorp.com
+Accessible contact form for saxonwordpress.com. Author: William Leonard, Saxon Enterprises, Inc.
 
 == Description ==
 

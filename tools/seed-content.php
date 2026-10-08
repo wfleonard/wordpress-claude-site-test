@@ -11,7 +11,7 @@
  *
  * Do not run against production without a database backup.
  *
- * @author William Leonard, CTI Global <bill.leonard@cticorp.com>
+ * @author William Leonard, Saxon Enterprises, Inc.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
